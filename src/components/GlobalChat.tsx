@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { supabase } from "../supabase.js";
-import Loader from "../shared/Loader.js";
-import { FaPen } from "react-icons/fa";
-import { format, parseISO } from "date-fns";
+import { format, parseISO, isBefore, addMinutes, isAfter  } from "date-fns";
 import { FaTrash } from "react-icons/fa";
 import ChatInput from "./ChatInput.js";
 import DeleteModal from "../Modals/DeleteModal.js";
@@ -128,6 +126,13 @@ function GlobalChat() {
     setuniqueId(uuid);
     setshowModal(true);
   }
+
+  const canDeleteMessage = (createdAt:string) => {
+    const createdAtDate = parseISO(createdAt);
+    const deadline = addMinutes(createdAtDate, 15);
+    const currentTime = new Date();
+    return isBefore(currentTime, deadline);
+  };
   return (
     <div className="container mx-auto mt-3 flex items-center p-10">
       <div className="w-full mx-auto bg-white rounded-lg shadow-lg overflow-hidden">
@@ -151,7 +156,7 @@ function GlobalChat() {
               onMouseEnter={() => handleMouseOver(ind)}
               onMouseLeave={() => handleMouseLeave(ind)}
             >
-              {(showOptions[ind] === true &&
+              {((showOptions[ind] === true && canDeleteMessage(msg.created_at)) && 
                 msg.is_deleted !== true && userData?.user.id === msg.sender_id) && (
                 <div className="flex justify-between p-3">
                   <FaTrash
