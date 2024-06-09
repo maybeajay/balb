@@ -26,10 +26,16 @@ const userSlice = createSlice({
                 state.userData = JSON.parse(storedData);
             }
             state.loading = false;
+        },
+        signOut: (state)=>{
+            state.loading = true;
+            localStorage.removeItem("userInfo");
+            state.userData = []
+            state.loading = false;
         }
     }
 
 })
 
-export const {addToLocal, getData, setLoading} = userSlice.actions
+export const {addToLocal, getData, setLoading, signOut} = userSlice.actions
 export default userSlice.reducer;
