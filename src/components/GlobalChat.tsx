@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { supabase } from "../supabase.js";
-import { format, parseISO, isBefore, addMinutes, isAfter  } from "date-fns";
+import { format, parseISO, isBefore, addMinutes, isAfter } from "date-fns";
 import { FaTrash } from "react-icons/fa";
 import ChatInput from "./ChatInput.js";
 import DeleteModal from "../Modals/DeleteModal.js";
@@ -25,9 +25,9 @@ type Data = {
 function GlobalChat() {
   const [messages, setMessages] = useState<Data>([]);
   const [errors, setErrors] = useState(null);
-  const [showModal, setshowModal] = useState<boolean>(false)
-  const [uniqueId, setuniqueId] = useState<number | null>(null)
-  const { userData} = useSelector((state: any) => state.user);
+  const [showModal, setshowModal] = useState<boolean>(false);
+  const [uniqueId, setuniqueId] = useState<number | null>(null);
+  const { userData } = useSelector((state: any) => state.user);
   const [showOptions, setshowOptions] = useState<boolean[]>(
     Array(messages.length).fill(false)
   );
@@ -56,15 +56,19 @@ function GlobalChat() {
             setMessages((prevMessages) => {
               let index = prevMessages.findIndex(
                 (message) =>
-                  message.id === payload.old?.id || message.id === payload.new.id
+                  message.id === payload.old?.id ||
+                  message.id === payload.new.id
               );
-  
+
               if (payload.new.is_deleted) {
                 // If the new payload indicates the message is deleted
                 if (index !== -1) {
                   // Update the message to show it is deleted
                   const updatedMessages = [...prevMessages];
-                  updatedMessages[index] = { ...payload.new, content: "This message is deleted" };
+                  updatedMessages[index] = {
+                    ...payload.new,
+                    content: "This message is deleted",
+                  };
                   return updatedMessages;
                 }
               } else {
@@ -90,8 +94,7 @@ function GlobalChat() {
       console.error("Error subscribing to real-time updates:", error);
     }
   };
-  
-  
+
   useEffect(() => {
     fetchAllMessages();
     subscribeToRealtime();
@@ -121,13 +124,13 @@ function GlobalChat() {
     });
   };
 
-  const handleCloseModal =(uuid:number)=>{
-    console.log(uuid)
+  const handleCloseModal = (uuid: number) => {
+    console.log(uuid);
     setuniqueId(uuid);
     setshowModal(true);
-  }
+  };
 
-  const canDeleteMessage = (createdAt:string) => {
+  const canDeleteMessage = (createdAt: string) => {
     const createdAtDate = parseISO(createdAt);
     const deadline = addMinutes(createdAtDate, 15);
     const currentTime = new Date();
@@ -142,67 +145,94 @@ function GlobalChat() {
             {/* Message from others */}
             {/* Message from user */}
             <div>
-            <div className="text-white p-3 rounded-lg">
-  <div className="flex flex-col gap-2">
-    {messages.length > 0 &&
-      messages.map((msg: Data, ind: number) => (
-        <div
-          className={`chat-message gap-2 flex ${userData?.user.id === msg.sender_id ? "justify-end" : "justify-start"}`}
-          key={ind}
-        >
-          <div className={`flex flex-col space-y-2 text-xs max-w-md mx-2 order-1 items-${userData?.user.id === msg.sender_id ? "end" : "start"} justify-${userData?.user.id === msg.sender_id ? "end" : "start"}`}>
-            <div
-              className={`rounded-md w-full ${userData?.user.id === msg.sender_id ? "bg-[#7678ed] text-white" : "bg-gray-300 text-black"}`}
-              onMouseEnter={() => handleMouseOver(ind)}
-              onMouseLeave={() => handleMouseLeave(ind)}
-            >
-              {((showOptions[ind] === true && canDeleteMessage(msg.created_at)) && 
-                msg.is_deleted !== true && userData?.user.id === msg.sender_id) && (
-                <div className="flex justify-between p-3">
-                  <FaTrash
-                    color={"#fff"}
-                    className="hover:cursor-pointer"
-                    size={20}
-                    onClick={() => handleCloseModal(msg?.id)}
-                  />
+              <div className="text-white p-3 rounded-lg">
+                <div className="flex flex-col gap-2">
+                  {messages.length > 0 &&
+                    messages.map((msg: Data, ind: number) => (
+                      <div
+                        className={`chat-message gap-2 flex ${
+                          userData?.user?.id === msg.sender_id
+                            ? "justify-end"
+                            : "justify-start"
+                        }`}
+                        key={ind}
+                      >
+                        <div
+                          className={`flex flex-col space-y-2 text-xs max-w-md mx-2 order-1 items-${
+                            userData?.user?.id === msg.sender_id
+                              ? "end"
+                              : "start"
+                          } justify-${
+                            userData?.user?.id === msg.sender_id
+                              ? "end"
+                              : "start"
+                          }`}
+                        >
+                          <div
+                            className={`rounded-md w-full ${
+                              userData?.user.id === msg.sender_id
+                                ? "bg-[#7678ed] text-white"
+                                : "bg-gray-300 text-black"
+                            }`}
+                            onMouseEnter={() => handleMouseOver(ind)}
+                            onMouseLeave={() => handleMouseLeave(ind)}
+                          >
+                            {showOptions[ind] === true &&
+                              canDeleteMessage(msg.created_at) &&
+                              msg.is_deleted !== true &&
+                              userData?.user.id === msg.sender_id && (
+                                <div className="flex justify-between p-3">
+                                  <FaTrash
+                                    color={"#fff"}
+                                    className="hover:cursor-pointer"
+                                    size={20}
+                                    onClick={() => handleCloseModal(msg?.id)}
+                                  />
+                                </div>
+                              )}
+                            <p className="text-xs p-2 mr-3">
+                              {userData?.user.id === msg.sender_id
+                                ? "You"
+                                : `${messages.user?.firstName} ${messages.user?.lastName}`}
+                            </p>
+                            <div className="flex flex-col">
+                              <span className="px-4 py-2 rounded-lg inline-block rounded-br-none font-semibold p-5 text-md">
+                                {msg?.is_deleted !== true
+                                  ? msg?.message
+                                  : "this message was deleted"}
+                              </span>
+                              <p className="px-4 py-2 rounded-lg inline-block rounded-br-none p-5 text-end">
+                                {formateDate(msg?.created_at)}
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                        {msg?.sender_id === 1 ? (
+                          <img
+                            src="https://images.unsplash.com/photo-1590031905470-a1a1feacbb0b?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=3&w=144&h=144"
+                            alt="My profile"
+                            className="w-12 h-12 rounded-md order-2"
+                          />
+                        ) : (
+                          <p>o immggg</p>
+                        )}
+                      </div>
+                    ))}
                 </div>
-              )}
-              <p className="text-xs p-2 mr-3">
-                {userData?.user.id === msg.sender_id ? "You" : `${messages.user?.firstName} ${messages.user?.lastName}`}
-              </p>
-              <div className="flex flex-col">
-                <span className="px-4 py-2 rounded-lg inline-block rounded-br-none font-semibold p-5 text-md">
-                  {msg?.is_deleted !== true
-                    ? msg?.message
-                    : "this message was deleted"}
-                </span>
-                <p className="px-4 py-2 rounded-lg inline-block rounded-br-none p-5 text-end">
-                  {formateDate(msg?.created_at)}
-                </p>
               </div>
-            </div>
-          </div>
-          {msg?.sender_id === 1 ? (
-            <img
-              src="https://images.unsplash.com/photo-1590031905470-a1a1feacbb0b?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=3&w=144&h=144"
-              alt="My profile"
-              className="w-12 h-12 rounded-md order-2"
-            />
-          ) : (
-            <p>o immggg</p>
-          )}
-        </div>
-      ))}
-  </div>
-</div>
             </div>
           </div>
         </div>
         <ChatInput />
         {/* Delete Modal */}
-       {
-        showModal &&  <DeleteModal   setshowModal={setshowModal} uuid={uniqueId} setMessages={setMessages} message={messages}/>
-       }
+        {showModal && (
+          <DeleteModal
+            setshowModal={setshowModal}
+            uuid={uniqueId}
+            setMessages={setMessages}
+            message={messages}
+          />
+        )}
       </div>
     </div>
   );
