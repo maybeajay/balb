@@ -1,34 +1,45 @@
 "use client"
 import {Link} from 'react-router-dom'
-import React, { useState } from 'react'
+import React, { useRef, useState } from 'react'
 import {supabase} from '../supabase.js'
 import { useNavigate } from 'react-router-dom';
 import { MdOutlineMail } from "react-icons/md";
 import { RiLockPasswordLine } from "react-icons/ri";
+import { FaRegUser } from "react-icons/fa";
 type credsType = {
     email: string | undefined;
     password: string | undefined;
-    confirmPassword: string | undefined
+    confirmPassword: string | undefined,
+    userName: string | null,
+    profile_url: string | null
 }
 
 type Errors = {
     emailErr: string | null;
     passErr: string | null;
-    confirmPassErr: string | null
+    confirmPassErr: string | null,
+    usernameErr: string | null,
+    profileErr: string | null
 }
 
 function Signup() {
     const [userData, setuserData] = useState<credsType>({
         email: "",
         password: "",
-        confirmPassword: ""
+        confirmPassword: "",
+        userName: '',
+        profile_url: ""
     })
     const [isLoading, setisLoading] = useState<boolean>(false)
-
+    const [file, setFile] = useState<string | null>(null);
+    const [preview, setPreview] = useState<string | null>(null);
+    const ref = useRef();
     const [errors, setErrors ] = useState<Errors>({
         emailErr: null,
         passErr: null,
-        confirmPassErr: null
+        confirmPassErr: null,
+        usernameErr: null,
+        profileErr: null
     })
     const router = useNavigate();
     const handleChange = (e: any) => {
@@ -76,6 +87,20 @@ function Signup() {
                     newErrors.confirmPassErr = null;
                 }
                 break;
+            case "username":
+              if(!value){
+                newErrors.usernameErr = "User name is required*";
+              }else{
+                newErrors.usernameErr = null
+              }
+            break;
+           case "profileurl":
+            if(!value){
+              newErrors.profileErr = "Profile picture is required*";
+            }else{
+              newErrors.profileErr = null
+            }
+            break;
             default:
                 break;
         }
@@ -84,7 +109,7 @@ function Signup() {
         setErrors(newErrors);
     }
     
-    const handleSubmit = async(e)=>{
+    const handleSubmit = async(e:HTMLInputElement)=>{
         e.preventDefault();
         let newErrors = {...errors};
         let isValid: boolean= false;
@@ -172,6 +197,13 @@ function Signup() {
             setisLoading(false);
         }
     }
+    }
+
+    const handleImage = (e:HTMLInputElement)=>{
+      const file = e.target.files[0];
+      setFile(file);
+      const objectUrl = URL.createObjectURL(file)
+      setPreview(objectUrl);
     }
 
   return (
@@ -383,16 +415,16 @@ function Signup() {
         </div>
         <div className="w-full md:w-1/2 py-10 px-5 md:px-10">
           <div className="text-center mb-10">
-            <h1 className="font-bold text-3xl text-gray-900">Login</h1>
-            <p>Enter your information to login</p>
+            <h1 className="font-bold text-3xl text-gray-900">Signup</h1>
+            <p>Enter your information to Signup</p>
           </div>
           <div>
-            <div className="flex flex-col mx-3">
-              <div className="w-full px-3 mb-5">
+            <div className="flex flex-row mx-3">
+              <div className="w-full px-3 mb-5 flex-row">
                 <label htmlFor="" className="text-xs font-semibold px-1">
                   Email
                 </label>
-                <div className="flex">
+                <div className="flex flex-row">
                   <div className="w-10 z-10 pl-1 text-center pointer-events-none flex items-center justify-center">
                   <MdOutlineMail  className="mdi mdi-email-outline text-gray-400 text-lg" />
                   </div>
@@ -403,11 +435,31 @@ function Signup() {
                     name='email'
                     onChange={handleChange}
                   />
-                </div>
+                  </div>
+                  <p className='text-red-600 text-md'>{errors?.emailErr}</p>
+
               </div>
-              <p className='text-red-600 text-md'>{errors?.emailErr}</p>
+
+              <div className="w-full px-3 mb-5 flex-row">
+              <label htmlFor='username text-xs font-semibold px-1'>User Name</label>
+                <div className="flex flex-row">
+                  <div className="w-10 z-10 pl-1 text-center pointer-events-none flex items-center justify-center">
+                  <FaRegUser  className="mdi mdi-email-outline text-gray-400 text-lg" />
+                  </div>
+                  <input
+                    type="email"
+                    className="w-full -ml-10 pl-10 pr-3 py-2 rounded-lg border-2 border-gray-200 outline-none focus:border-indigo-500"
+                    placeholder="John DOe"
+                    name='username'
+                    onChange={handleChange}
+                  />
+                  </div>
+                  <p className='text-red-600 text-md'>{errors?.usernameErr}</p>
+                  
+              </div>
+              
             </div>
-            <div className="flex -mx-3">
+            <div className="flex mx-3">
               <div className="w-full px-3 mb-12">
                 <label htmlFor="" className="text-xs font-semibold px-1">
                   Password
@@ -423,8 +475,8 @@ function Signup() {
                     name='password'
                     onChange={handleChange}
                   />
-                  <p className='text-red-600 text-md'>{errors?.passErr}</p>
                 </div>
+                <p className='text-red-600 text-md'>{errors?.passErr}</p>
               </div>
               <div className="w-full px-3 mb-12">
                 <label htmlFor="" className="text-xs font-semibold px-1">
@@ -445,11 +497,19 @@ function Signup() {
                 <p className='text-red-600 text-md'>{errors?.confirmPassErr}</p>
               </div>
             </div>
-            <div className="flex -mx-3">
+                {/* for profile picture */}
+                <div className='px-5'>
+                <label htmlFor='image' className='text-xs font-semibold px-1'>Profile Picture</label>
+                <div className='bg-gray-300 w-[120px] h-[120px] rounded-[60px]' onClick={()=>ref?.current.click()}>
+                {preview &&  <img src={preview} className='w-[120px] h-[120px] rounded-[60px] object-cover'/>}
+                <input type='file' accept='image/*' onChange={handleImage} style={{display: "none"}} ref={ref}/>
+              </div>
+              </div>
+            <div className="flex mt-5 mx-5">
               <div className="w-full px-3 mb-5">
-                <Link to={'/login'} className='mx-10 hover:text-indigo-500'>Already a user? Login instead</Link>
+                <Link to={'/login'} className='hover:text-indigo-500'>Already a user? Login instead</Link>
                 <button className="block w-full max-w-xs mx-auto bg-indigo-500 hover:bg-indigo-700 focus:bg-indigo-700 text-white rounded-lg px-3 py-3 font-semibold mt-5" onClick={handleSubmit}>
-                Login
+                Signup
                 </button>
               </div>
             </div>

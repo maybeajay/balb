@@ -56,7 +56,7 @@ const ChatInput = (props: Props) => {
         value={message}
         onChange={(e)=>handleChange(e)}
       />
-      <button className={` transition-all w-[50] h-[50] rounded-md relative right-10 ${showEmoji == true ? "animate-bounce duration-100" : "animate-none"}`} onClick={()=>setshowEmoji(!showEmoji)}><FaRegLaugh color={`${showEmoji ? "#9b51e0" : "black"}`} size={25}/></button>
+      <button className={` transition-all w-[50] h-[50] rounded-md relative right-10`} onClick={()=>setshowEmoji(!showEmoji)}><FaRegLaugh color={`${showEmoji ? "#9b51e0" : "black"}`} size={25}/></button>
       <button className={`text-white px-4 py-2 rounded-r-lg ${isDisabled ? "bg-gray-300" : "bg-blue-500"}`} disabled={isDisabled} onClick={addMessage}>
       {isLoading ? <Loader size={1} color='blue'/> :  <LuSendHorizonal />}
       </button>

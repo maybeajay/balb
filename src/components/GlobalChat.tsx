@@ -137,6 +137,7 @@ function GlobalChat() {
     return isBefore(currentTime, deadline);
   };
   return (
+    <>
     <div className="container mx-auto mt-3 flex items-center p-10">
       <div className="w-full mx-auto bg-white rounded-lg shadow-lg overflow-hidden">
         {/* Messages */}
@@ -170,7 +171,7 @@ function GlobalChat() {
                         >
                           <div
                             className={`rounded-md w-full ${
-                              userData?.user.id === msg.sender_id
+                              userData?.user.id === msg?.sender_id
                                 ? "bg-[#7678ed] text-white"
                                 : "bg-gray-300 text-black"
                             }`}
@@ -235,6 +236,7 @@ function GlobalChat() {
         )}
       </div>
     </div>
+    </>
   );
 }
 

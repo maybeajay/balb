@@ -23,9 +23,11 @@ function Home({}: Props) {
         </div>
         </section>
 
-        <main className='flex items-center h-[80vh]'>
+        <main className='h-[80vh]'>
           {
-            currentPage =="Global" ? <GlobalChat /> :<IndividualChat />
+            currentPage =="Global" ? <>    <p className='text-center font-sm mt-2 text-[#9ca3af] text-md'>Do not share personal information here</p>
+            <p className='text-center font-sm text-[#9ca3af] text-sm'>You can delete a message upto 15 minutes</p>
+            <GlobalChat /></> :<IndividualChat />
           }
         </main>
     </div>
