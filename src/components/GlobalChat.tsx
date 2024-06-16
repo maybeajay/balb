@@ -35,7 +35,8 @@ function GlobalChat() {
     try {
       let { data: messages, error } = await supabase
         .from("messages")
-        .select("*");
+        .select("*")
+        .order('created_at', { ascending: true })
       if (messages) {
         setMessages(messages);
       } else if (error) {
@@ -170,7 +171,7 @@ function GlobalChat() {
                           }`}
                         >
                           <div
-                            className={`rounded-md w-full ${
+                            className={`rounded-md min-w-[18vw] ${
                               userData?.user.id === msg?.sender_id
                                 ? "bg-[#7678ed] text-white"
                                 : "bg-gray-300 text-black"
@@ -219,6 +220,7 @@ function GlobalChat() {
                         )}
                       </div>
                     ))}
+                    
                 </div>
               </div>
             </div>

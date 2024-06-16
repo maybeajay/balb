@@ -3,8 +3,9 @@ import { Link, useNavigate } from "react-router-dom";
 import { supabase } from "../supabase.js";
 import { MdOutlineMail } from "react-icons/md";
 import { RiLockPasswordLine } from "react-icons/ri";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { addToLocal, setLoading } from "../slices/userSlice.js";
+import Loader from "../shared/Loader.js";
 type credsType = {
   email: string | undefined;
   password: string | undefined;
@@ -15,6 +16,7 @@ function Login() {
     email: "",
     password: "",
   });
+  const [isLoading, setisLoading] = useState<boolean>(false);
   const dispatch = useDispatch();
   const navigation = useNavigate();
   const handleChange = (e: any) => {
@@ -32,15 +34,22 @@ function Login() {
   };
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email: userData.email,
-      password: userData.password,
-    });
-    if (data.session) {
-      dispatch(setLoading(true));
-      dispatch(addToLocal(JSON.stringify(data)))
-      dispatch(setLoading(false));
-      navigation("/");
+    try {
+      setisLoading(true);
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: userData.email,
+        password: userData.password,
+      });
+      if (data.session) {
+        dispatch(setLoading(true));
+        dispatch(addToLocal(JSON.stringify(data)))
+        dispatch(setLoading(false));
+        navigation("/");
+      }
+    } catch (error) {
+      console.error(error);
+    }finally{
+      setisLoading(false);
     }
   };
   return (
@@ -311,8 +320,9 @@ function Login() {
                     <button
                       className="block w-full max-w-xs mx-auto bg-indigo-500 hover:bg-indigo-700 focus:bg-indigo-700 text-white rounded-lg px-3 py-3 font-semibold mt-5"
                       onClick={handleSubmit}
+                      disabled={isLoading}
                     >
-                      Login
+                    {isLoading ? <Loader size={2} color="#fff"/> :   "Login"}
                     </button>
                   </div>
                 </div>
