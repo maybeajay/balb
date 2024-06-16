@@ -173,6 +173,7 @@ function Signup() {
     });
 
     setErrors(newErrors);
+    adduserToDB()
     if (!isValid) {
       console.log("FAILED TO SUBMIITTT");
     } else {
@@ -207,11 +208,34 @@ function Signup() {
     }
   };
 
+  async function uploadAvatar(file:any) {
+    const fileName = file
+    const { data, error } = await supabase
+      .storage
+      .from('avatar/dp')
+      .upload(file?.name,file, {
+        cacheControl: '3600'
+      })
+    if(data){
+      console.log("data", data);
+    }
+    if (error) {
+      console.error('Error uploading file:', error)
+      return null
+    }
+  
+    // Construct the URL to access the uploaded file
+    return data?.path
+  }
+  
+  
+  
+
   const adduserToDB = async() => {
     try {
       const { data, error } = await supabase
         .from("users")
-        .insert([{ user_name: userData.userName, first_name: userData.first_name, last_name: userData.last_name, created_at: new Date(),   }])
+        .insert([{ user_name: userData.userName, first_name: userData.first_name, last_name: userData.last_name, created_at: new Date(), profile_url: uploadAvatar(file)}])
         .select();
     } catch (error) {}
   };
@@ -219,6 +243,7 @@ function Signup() {
   const handleImage = (e: HTMLInputElement) => {
     const file = e.target.files[0];
     setFile(file);
+    adduserToDB();
     const objectUrl = URL.createObjectURL(file);
     setPreview(objectUrl);
   };
@@ -472,7 +497,7 @@ function Signup() {
                     <input
                       type="email"
                       className="w-full -ml-10 pl-10 pr-3 py-2 rounded-lg border-2 border-gray-200 outline-none focus:border-indigo-500"
-                      placeholder="John DOe"
+                      placeholder="john doe"
                       name="username"
                       onChange={handleChange}
                     />
@@ -521,15 +546,15 @@ function Signup() {
                 </div>
               </div>
 
-              <div className="flex ">
+              <div className="flex px-3">
                 <div className="w-full px-2 mb-12">
-                  <label htmlFor="" className="text-xs font-semibold px-1">
+                  <label htmlFor="" className="text-xs font-semibold">
                     First Name
                   </label>
                   <div className="flex mx-3">
                     <input
                       type="text"
-                      className="w-full pl-2 pr-3 py-2 rounded-lg border-2 border-gray-200 outline-none focus:border-indigo-500"
+                      className="w-full  py-2 rounded-lg border-2 border-gray-200 outline-none focus:border-indigo-500"
                       placeholder="First Name"
                       name="first_name"
                       onChange={handleChange}
