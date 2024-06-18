@@ -6,16 +6,25 @@ import { RiLockPasswordLine } from "react-icons/ri";
 import { useDispatch } from "react-redux";
 import { addToLocal, setLoading } from "../slices/userSlice.js";
 import Loader from "../shared/Loader.js";
+import {motion} from 'framer-motion'
 type credsType = {
   email: string | undefined;
   password: string | undefined;
 };
+type credsError = {
+  emailErr: string | null,
+  passErr: string | null
+}
 
 function Login() {
   const [userData, setuserData] = useState<credsType>({
     email: "",
     password: "",
   });
+  const [errors, setErrors] = useState<credsError>({
+    emailErr: null,
+    passErr: null
+  })
   const [isLoading, setisLoading] = useState<boolean>(false);
   const dispatch = useDispatch();
   const navigation = useNavigate();
@@ -32,24 +41,49 @@ function Login() {
         break;
     }
   };
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e:React.SyntheticEvent) => {
     e.preventDefault();
-    try {
-      setisLoading(true);
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email: userData.email,
-        password: userData.password,
-      });
-      if (data.session) {
-        dispatch(setLoading(true));
-        dispatch(addToLocal(JSON.stringify(data)))
-        dispatch(setLoading(false));
-        navigation("/");
+    let isValid:Boolean = false
+    Object.entries(userData).forEach(([key, value]) =>{
+      switch(key){
+        case "email":
+          if(!value || value == ""){
+            setErrors((prevErr)=>({...prevErr, emailErr: "Email is required"}));
+          }else{
+            setErrors({...errors, emailErr: null});
+            isValid = true;
+          }
+        break;
+        case "password":
+          if(!value){
+            setErrors({...errors, passErr: "Password is required"});
+          }else{
+            setErrors({...errors, passErr: null});
+            isValid = true;
+          }
+        break;
+        default :
+        break;
       }
-    } catch (error) {
-      console.error(error);
-    }finally{
-      setisLoading(false);
+    })
+    if(isValid){
+      try {
+        setisLoading(true);
+        const { data, error } = await supabase.auth.signInWithPassword({
+          email: userData.email,
+          password: userData.password,
+        });
+        if (data.session) {
+          dispatch(setLoading(true));
+          dispatch(addToLocal(JSON.stringify(data)))
+          dispatch(setLoading(false));
+          navigation("/");
+        }
+      } catch (error) {
+        console.error(error);
+      }finally{
+        setisLoading(false);
+      }
     }
   };
   return (
@@ -288,6 +322,7 @@ function Login() {
                         onChange={handleChange}
                       />
                     </div>
+                    <p className="text-red-500 mt-2 px-2">{errors?.emailErr}</p>
                   </div>
                 </div>
                 <div className="flex -mx-3">
@@ -307,24 +342,28 @@ function Login() {
                         onChange={handleChange}
                       />
                     </div>
+                    <p className="text-red-500 mt-2 px-2">{errors.passErr}</p>
                   </div>
                 </div>
                 <div className="flex -mx-3">
-                  <div className="w-full px-3 mb-5">
+                  <motion.div className="w-full px-3 mb-5" >
                     <Link
                       to={"/signup"}
                       className="mx-10 hover:text-indigo-500"
                     >
                       Didn't have an account? Sign up instead
                     </Link>
-                    <button
-                      className="block w-full max-w-xs mx-auto bg-indigo-500 hover:bg-indigo-700 focus:bg-indigo-700 text-white rounded-lg px-3 py-3 font-semibold mt-5"
+                    <motion.button
+                      whileTap={{ scale: 1.2 }}
+                      drag="x"
+                      dragConstraints={{ left: -100, right: 100 }}
+                      className="block w-1/4 max-w-xs mx-auto bg-indigo-500 hover:bg-indigo-700 focus:bg-indigo-700 text-white rounded-lg px-3 py-3 font-semibold mt-5"
                       onClick={handleSubmit}
                       disabled={isLoading}
                     >
                     {isLoading ? <Loader size={2} color="#fff"/> :   "Login"}
-                    </button>
-                  </div>
+                    </motion.button>
+                  </motion.div>
                 </div>
               </div>
             </div>

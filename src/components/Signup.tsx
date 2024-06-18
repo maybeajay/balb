@@ -6,8 +6,9 @@ import { useNavigate } from "react-router-dom";
 import { MdOutlineMail } from "react-icons/md";
 import { RiLockPasswordLine } from "react-icons/ri";
 import { FaRegUser } from "react-icons/fa";
+import {motion} from 'framer-motion'
 type credsType = {
-  email: string | undefined;
+  email: string | null;
   password: string | undefined;
   confirmPassword: string | undefined;
   userName: string | null;
@@ -95,20 +96,28 @@ function Signup() {
           newErrors.confirmPassErr = null;
         }
         break;
-      case "username":
+      case "userName":
+        console.log(value)
         if (!value) {
           newErrors.usernameErr = "User name is required*";
         } else {
           newErrors.usernameErr = null;
         }
         break;
-      case "profileurl":
-        if (!value) {
-          newErrors.profileErr = "Profile picture is required*";
-        } else {
-          newErrors.profileErr = null;
+      case "first_name":
+        if(!value){
+          newErrors.firstNameErr = "First Name is required*";
+        }else{
+          newErrors.firstNameErr = null
         }
-        break;
+      break ;
+      case "last_name":
+        if(!value){
+          newErrors.lastNameErr = "First Name is required*";
+        }else{
+          newErrors.lastNameErr = null
+        }
+      break ;
       default:
         break;
     }
@@ -117,7 +126,7 @@ function Signup() {
     setErrors(newErrors);
   };
 
-  const handleSubmit = async (e: HTMLInputElement) => {
+  const handleSubmit = async (e: React.SyntheticEvent) => {
     e.preventDefault();
     let newErrors = { ...errors };
     let isValid: boolean = false;
@@ -166,14 +175,34 @@ function Signup() {
             isValid = true;
           }
           break;
-
+          case "userName":
+            console.log(value)
+            if (!value) {
+              newErrors.usernameErr = "User name is required*";
+            } else {
+              newErrors.usernameErr = null;
+            }
+            break;
+          case "first_name":
+            if(!value){
+              newErrors.firstNameErr = "First Name is required*";
+            }else{
+              newErrors.firstNameErr = null
+            }
+          break ;
+          case "last_name":
+            if(!value){
+              newErrors.lastNameErr = "First Name is required*";
+            }else{
+              newErrors.lastNameErr = null
+            }
+          break ;
         default:
           break;
       }
     });
 
     setErrors(newErrors);
-    adduserToDB()
     if (!isValid) {
       console.log("FAILED TO SUBMIITTT");
     } else {
@@ -209,7 +238,6 @@ function Signup() {
   };
 
   async function uploadAvatar(file:any) {
-    const fileName = file
     const { data, error } = await supabase
       .storage
       .from('avatar/dp')
@@ -225,7 +253,7 @@ function Signup() {
     }
   
     // Construct the URL to access the uploaded file
-    return data?.path
+    return data?.fullPath
   }
   
   
@@ -240,10 +268,9 @@ function Signup() {
     } catch (error) {}
   };
 
-  const handleImage = (e: HTMLInputElement) => {
+  const handleImage = (e: React.SyntheticEvent) => {
     const file = e.target.files[0];
     setFile(file);
-    adduserToDB();
     const objectUrl = URL.createObjectURL(file);
     setPreview(objectUrl);
   };
@@ -498,7 +525,7 @@ function Signup() {
                       type="email"
                       className="w-full -ml-10 pl-10 pr-3 py-2 rounded-lg border-2 border-gray-200 outline-none focus:border-indigo-500"
                       placeholder="john doe"
-                      name="username"
+                      name="userName"
                       onChange={handleChange}
                     />
                   </div>
@@ -551,10 +578,10 @@ function Signup() {
                   <label htmlFor="" className="text-xs font-semibold">
                     First Name
                   </label>
-                  <div className="flex mx-3">
+                  <div className="flex">
                     <input
                       type="text"
-                      className="w-full  py-2 rounded-lg border-2 border-gray-200 outline-none focus:border-indigo-500"
+                      className="w-full pl-3 py-2 rounded-lg border-2 border-gray-200 outline-none focus:border-indigo-500"
                       placeholder="First Name"
                       name="first_name"
                       onChange={handleChange}
@@ -569,7 +596,7 @@ function Signup() {
                   <div className="flex mx-3">
                     <input
                       type="text"
-                      className="w-full pl-2 pr-3 py-2 rounded-lg border-2 border-gray-200 outline-none focus:border-indigo-500"
+                      className="w-full pl-3 pr-3 py-2 rounded-lg border-2 border-gray-200 outline-none focus:border-indigo-500"
                       placeholder="Last Name"
                       name="last_name"
                       onChange={handleChange}
@@ -585,8 +612,11 @@ function Signup() {
                 <label htmlFor="image" className="text-xs font-semibold px-1">
                   Profile Picture
                 </label>
-                <div
-                  className="bg-gray-300 w-[120px] h-[120px] rounded-[60px] items-center flex justify-center"
+                <motion.div 
+                 whileTap={{ scale:  0.9}}
+                 drag="x"
+                 dragConstraints={{ left: -100, right: 100 }}               
+                  className="bg-gray-300 w-[120px] h-[120px] rounded-[60px] items-center flex justify-center profile_box_Shadow"
                   onClick={() => ref?.current.click()}
                 >
                   {preview ? (
@@ -604,19 +634,23 @@ function Signup() {
                     style={{ display: "none" }}
                     ref={ref}
                   />
-                </div>
+                </motion.div>
               </div>
               <div className="flex mt-5 mx-5">
                 <div className="w-full px-3 mb-5">
                   <Link to={"/login"} className="hover:text-indigo-500">
                     Already a user? Login instead
                   </Link>
-                  <button
-                    className="block w-full max-w-xs mx-auto bg-indigo-500 hover:bg-indigo-700 focus:bg-indigo-700 text-white rounded-lg px-3 py-3 font-semibold mt-5"
+                  <motion.button
+                    whileHover={{ scale: 0.9 }}
+                    whileTap={{ scale: 1.2 }}
+                    drag="x"
+                    dragConstraints={{ left: -100, right: 100 }}
+                    className="block w-1/4 max-w-xs mx-auto bg-indigo-500 hover:bg-indigo-700 focus:bg-indigo-700 text-white rounded-lg px-3 py-3 font-semibold mt-5"
                     onClick={handleSubmit}
                   >
                     Signup
-                  </button>
+                  </motion.button>
                 </div>
               </div>
             </div>
