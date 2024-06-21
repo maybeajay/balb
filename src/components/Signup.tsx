@@ -206,7 +206,6 @@ function Signup() {
 
     setErrors(newErrors);
     if (!isValid) {
-      console.log("FAILED TO SUBMIITTT");
     } else {
       try {
         setisLoading(true);
