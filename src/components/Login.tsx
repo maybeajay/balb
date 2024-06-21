@@ -43,22 +43,25 @@ function Login() {
   };
   const handleSubmit = async (e:React.SyntheticEvent) => {
     e.preventDefault();
+    let newError = {}
     let isValid:Boolean = false
-    Object.entries(userData).forEach(([key, value]) =>{
+    Object.entries(userData).forEach(([key, value]) => {
       switch(key){
         case "email":
           if(!value || value == ""){
-            setErrors((prevErr)=>({...prevErr, emailErr: "Email is required"}));
+            newError.emailErr = "Email is required";
           }else{
-            setErrors({...errors, emailErr: null});
+            newError.emailErr = null
             isValid = true;
           }
         break;
         case "password":
           if(!value){
-            setErrors({...errors, passErr: "Password is required"});
-          }else{
-            setErrors({...errors, passErr: null});
+            newError.passErr="Password is required";
+            isValid = false;
+          }
+          else{
+            newError.passErr = null;
             isValid = true;
           }
         break;
@@ -66,6 +69,7 @@ function Login() {
         break;
       }
     })
+    setErrors(newError)
     if(isValid){
       try {
         setisLoading(true);
@@ -354,7 +358,7 @@ function Login() {
                       Didn't have an account? Sign up instead
                     </Link>
                     <motion.button
-                      whileTap={{ scale: 1.2 }}
+                      whileTap={{ scale: 0.9 }}
                       drag="x"
                       dragConstraints={{ left: -100, right: 100 }}
                       className="block w-1/4 max-w-xs mx-auto bg-indigo-500 hover:bg-indigo-700 focus:bg-indigo-700 text-white rounded-lg px-3 py-3 font-semibold mt-5"

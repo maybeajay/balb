@@ -26,7 +26,9 @@ type Errors = {
   firstNameErr: string | null
   lastNameErr: string | null
 };
-
+interface HTMLInputEvent extends Event {
+  target: HTMLInputElement & EventTarget;
+}
 function Signup() {
   const [userData, setuserData] = useState<credsType>({
     email: "",
@@ -204,7 +206,6 @@ function Signup() {
 
     setErrors(newErrors);
     if (!isValid) {
-      console.log("FAILED TO SUBMIITTT");
     } else {
       try {
         setisLoading(true);
