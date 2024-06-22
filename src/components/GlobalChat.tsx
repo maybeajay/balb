@@ -5,6 +5,7 @@ import { FaTrash } from "react-icons/fa";
 import ChatInput from "./ChatInput.js";
 import DeleteModal from "../Modals/DeleteModal.js";
 import { useSelector } from "react-redux";
+import ViewImage from "../Modals/ViewImage.js";
 type Data = {
   map: any;
   id: number;
@@ -18,7 +19,8 @@ type Data = {
     firstName: string;
     lastName: string;
   };
-  sender_id: number | string;
+  sender_id: number | undefined;
+  document: string | null
   payload: {};
 };
 
@@ -28,6 +30,8 @@ function GlobalChat() {
   const [showModal, setshowModal] = useState<boolean>(false);
   const [uniqueId, setuniqueId] = useState<number | null>(null);
   const { userData } = useSelector((state: any) => state.user);
+  const [isActive, setisActive] = useState<boolean>(false);
+  const [imageUrl, setimageUrl] = useState<string | null>("");
   const [showOptions, setshowOptions] = useState<boolean[]>(
     Array(messages.length).fill(false)
   );
@@ -137,6 +141,11 @@ function GlobalChat() {
     const currentTime = new Date();
     return isBefore(currentTime, deadline);
   };
+
+  const handleImageModal = (url: string | null)=>{
+    setimageUrl(url);
+    setisActive(true);
+  }
   return (
     <>
     <div className="container mx-auto mt-3 flex items-center p-10">
@@ -198,11 +207,11 @@ function GlobalChat() {
                                 : `${messages.user?.firstName} ${messages.user?.lastName}`}
                             </p>
                             <div className="flex flex-col">
-                              <span className="px-4 py-2 rounded-lg inline-block rounded-br-none font-semibold p-5 text-md">
+                             {msg?.message ?  <span className="px-4 py-2 rounded-lg inline-block rounded-br-none font-semibold p-5 text-md">
                                 {msg?.is_deleted !== true
                                   ? msg?.message
                                   : "this message was deleted"}
-                              </span>
+                              </span> : <img src={msg?.document} alt="image-file" onClick={()=>handleImageModal(msg?.document)}/>}
                               <p className="px-4 py-2 rounded-lg inline-block rounded-br-none p-5 text-end">
                                 {formateDate(msg?.created_at)}
                               </p>
@@ -236,6 +245,10 @@ function GlobalChat() {
             message={messages}
           />
         )}
+        {/* view image */}
+        {
+          isActive && <ViewImage imgUrl={imageUrl} setisActive={setisActive}/>
+        }
       </div>
     </div>
     </>

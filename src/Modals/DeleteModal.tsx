@@ -2,7 +2,7 @@ import { Dispatch, SetStateAction, useState } from "react";
 import { supabase } from "../supabase.js";
 type Props = {
   setshowModal: Dispatch<SetStateAction<boolean>>;
-  uuid: number | null;
+  uuid: number;
   setMessages: Dispatch<SetStateAction<string>>
 };
 

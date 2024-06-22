@@ -7,6 +7,7 @@ import { useDispatch } from "react-redux";
 import { addToLocal, setLoading } from "../slices/userSlice.js";
 import Loader from "../shared/Loader.js";
 import {motion} from 'framer-motion'
+import { FcGoogle } from "react-icons/fc";
 type credsType = {
   email: string | undefined;
   password: string | undefined;
@@ -90,6 +91,12 @@ function Login() {
       }
     }
   };
+
+  const handleGoogleLogin = async()=>{
+    supabase.auth.signInWithOAuth({
+      provider: 'google',
+    })
+  }
   return (
     <>
       <div className="min-w-screen min-h-screen bg-gray-900 flex items-center justify-center px-5 py-5">
@@ -366,6 +373,17 @@ function Login() {
                       disabled={isLoading}
                     >
                     {isLoading ? <Loader size={2} color="#fff"/> :   "Login"}
+                    </motion.button>
+
+                    {/* Continue with google */}
+                    <div className="flex mt-3 mb-3 items-center w-full gap-5 justify-center">
+                    <hr className="w-2/5"></hr>
+                    <p>OR</p>
+                    <hr className="w-2/5"></hr>
+                    </div>
+                    <motion.button className="w-1/4 max-w-xs mx-auto text-black rounded-lg px-3 py-3 font-semibold mt-5 border-indigo-500 border flex items-center justify-center gap-3" onClick={()=>handleGoogleLogin()}>
+                      Continue With Google
+                      <FcGoogle size={20}/>
                     </motion.button>
                   </motion.div>
                 </div>
