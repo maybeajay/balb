@@ -6,16 +6,16 @@ import PickEmoji from '../shared/PickEmoji.js';
 import { HiOutlineUpload } from "react-icons/hi";
 import Loader from '../shared/Loader.js';
 import { useSelector } from 'react-redux';
-type Props = {}
 
-const ChatInput = (props: Props) => {
+const ChatInput = () => {
   const [message, setMessage] = useState<string>("");
   const [isLoading ,setisLoading] = useState<boolean>(false);
   const [showEmoji, setshowEmoji] = useState<boolean>(false);
   const { userData} = useSelector((state: any) => state.user);
   const [imagePreview, setimagePreview] = useState('');
+  const [image, setImage] = useState('')
   const uploadRef = useRef();
-  async function addMessage() {
+  async function addMessage(imageURl:string) {
       try {
         setisLoading(true);
         const { data, error } = await supabase
@@ -23,9 +23,9 @@ const ChatInput = (props: Props) => {
       .insert([
         {
           created_at: new Date(),
-          message: message,
+          message: message ? message : null,
           type: "global",
-          document: null,
+          document: imageURl ? imageURl : null,
           sender_id: userData?.user.id,
           is_deleted: false
         },
@@ -35,7 +35,6 @@ const ChatInput = (props: Props) => {
     if (error) {
       console.error("Error inserting data:", error);
     } else {
-      console.log("Inserted data:", data);
       setMessage("");
     }
       } catch (error) {
@@ -45,14 +44,44 @@ const ChatInput = (props: Props) => {
         setisLoading(false);
       }
   }
+
+  async function uploadImage(file:string){
+    const { data, error } = await supabase
+    .storage
+    .from('balb_document/images')
+    .upload(file?.name,file, {
+      cacheControl: '3600'
+    })
+  if(data){
+    const  publicURL  = supabase.storage.from('balb_document/images').getPublicUrl(file?.name);
+    addMessage(publicURL?.data?.publicUrl)
+    setimagePreview("");
+    setImage("");
+  }
+  if (error) {
+    console.error('Error uploading file:', error)
+    return null
+  }
+  return data?.fullPath
+  }
+
+  const handleMessageSend = async ()=>{
+    if(imagePreview!=""){
+      uploadImage(image);
+    }else{
+      addMessage()
+    }
+  }
   const handleChange = async(e:React.ChangeEvent<HTMLInputElement>)=>{
     setMessage(e.target.value);
   }
 
-  let isDisabled =  imagePreview!="" ? false : true || message.trim().length<=0 ? true : false ;
+  // let isDisabled =  (imagePreview!="" ? false : true) || (message.trim().length<=0 ? true : false) ;
+  let isDisabled = false
   // for uploading images in the chats
   const handleImageUpload = (e:React.SyntheticEvent)=>{
     const file = e.target.files[0];
+    setImage(file);
     const objectUrl = URL.createObjectURL(file);
     setimagePreview(objectUrl);
   }
@@ -67,12 +96,12 @@ const ChatInput = (props: Props) => {
         onChange={(e)=>handleChange(e)}
       />
       {
-        imagePreview && <div>
-          <img src={imagePreview} width={150} height={150} alt='image'/>
+        imagePreview && <div className='w-1/5 h-1/5 absolute z-20'>
+          <img src={imagePreview} alt='image'/>
           </div>
       }
       <button className={` transition-all w-[50] h-[50] rounded-md relative right-10`} onClick={()=>setshowEmoji(!showEmoji)}><FaRegLaugh color={`${showEmoji ? "#9b51e0" : "black"}`} size={25}/></button>
-      <button className={`text-white px-4 py-2 rounded-r-lg ${isDisabled ? "bg-gray-300" : "bg-blue-500"}`} disabled={isDisabled} onClick={addMessage}>
+      <button className={`text-white px-4 py-2 rounded-r-lg ${isDisabled ? "bg-gray-300" : "bg-blue-500"}`} disabled={isDisabled} onClick={()=>handleMessageSend()}>
       {isLoading ? <Loader size={1} color='blue'/> :  <LuSendHorizonal />}
       </button>
 
