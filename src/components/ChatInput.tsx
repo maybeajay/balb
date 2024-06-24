@@ -6,7 +6,7 @@ import PickEmoji from '../shared/PickEmoji.js';
 import { HiOutlineUpload } from "react-icons/hi";
 import Loader from '../shared/Loader.js';
 import { useSelector } from 'react-redux';
-
+import {motion} from 'framer-motion'
 const ChatInput = () => {
   const [message, setMessage] = useState<string>("");
   const [isLoading ,setisLoading] = useState<boolean>(false);
@@ -106,7 +106,7 @@ const ChatInput = () => {
       </button>
 
       {/* upload  images */}
-      <div className='flex justify-center items-center w-[40px] h-[40px] mx-3 bg-gray-300 rounded-md hover:cursor-pointer' onClick={()=>uploadRef.current.click()}>
+      <div className='flex justify-center items-center w-[40px] h-[40px] mx-3 bg-gray-300 rounded-md hover:cursor-pointer' onClick={()=>uploadRef.current.click()}  animate={{ x: 100 }} initial={false} >
       <button className='transition-all rounded-md relative'>
       <HiOutlineUpload />
       </button>
