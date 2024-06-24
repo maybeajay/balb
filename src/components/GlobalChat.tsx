@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { supabase } from "../supabase.js";
-import { format, parseISO, isBefore, addMinutes, isAfter } from "date-fns";
+import { format, parseISO, isBefore, addMinutes } from "date-fns";
 import { FaTrash } from "react-icons/fa";
 import ChatInput from "./ChatInput.js";
 import DeleteModal from "../Modals/DeleteModal.js";
 import { useSelector } from "react-redux";
 import ViewImage from "../Modals/ViewImage.js";
+import {AnimatePresence, motion} from 'framer-motion'
 type Data = {
   map: any;
   id: number;
@@ -32,6 +33,7 @@ function GlobalChat() {
   const { userData } = useSelector((state: any) => state.user);
   const [isActive, setisActive] = useState<boolean>(false);
   const [imageUrl, setimageUrl] = useState<string | null>("");
+  const [isnewMessage, setisNewMessage] = useState<boolean>(false)
   const [showOptions, setshowOptions] = useState<boolean[]>(
     Array(messages.length).fill(false)
   );
@@ -64,7 +66,7 @@ function GlobalChat() {
                   message.id === payload.old?.id ||
                   message.id === payload.new.id
               );
-
+              setisNewMessage(true);
               if (payload.new.is_deleted) {
                 // If the new payload indicates the message is deleted
                 if (index !== -1) {
@@ -161,7 +163,7 @@ function GlobalChat() {
                   {messages.length > 0 &&
                     messages.map((msg: Data, ind: number) => (
                       <div
-                        className={`chat-message gap-2 flex ${
+                        className={`chat-message flex ${
                           userData?.user?.id === msg.sender_id
                             ? "justify-end"
                             : "justify-start"
@@ -191,7 +193,7 @@ function GlobalChat() {
                             {showOptions[ind] === true &&
                               canDeleteMessage(msg.created_at) &&
                               msg.is_deleted !== true &&
-                              userData?.user.id === msg.sender_id && (
+                              userData?.user?.id === msg.sender_id && (
                                 <div className="flex justify-between p-3">
                                   <FaTrash
                                     color={"#fff"}
@@ -211,14 +213,14 @@ function GlobalChat() {
                                 {msg?.is_deleted !== true
                                   ? msg?.message
                                   : "this message was deleted"}
-                              </span> : <img src={msg?.document} alt="image-file" onClick={()=>handleImageModal(msg?.document)}/>}
+                              </span> : <img src={msg?.document} alt="image-file" onClick={()=>handleImageModal(msg?.document)} className="hover:cursor-pointer"/>}
                               <p className="px-4 py-2 rounded-lg inline-block rounded-br-none p-5 text-end">
                                 {formateDate(msg?.created_at)}
                               </p>
                             </div>
                           </div>
                         </div>
-                        {msg?.sender_id === 1 ? (
+                        {/* {msg?.sender_id === 1 ? (
                           <img
                             src="https://images.unsplash.com/photo-1590031905470-a1a1feacbb0b?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=3&w=144&h=144"
                             alt="My profile"
@@ -226,7 +228,7 @@ function GlobalChat() {
                           />
                         ) : (
                           <p>o immggg</p>
-                        )}
+                        )} */}
                       </div>
                     ))}
                     
@@ -234,6 +236,11 @@ function GlobalChat() {
               </div>
             </div>
           </div>
+          {
+            isnewMessage && <motion.div>
+              <p>New Message</p>
+            </motion.div>
+          }
         </div>
         <ChatInput />
         {/* Delete Modal */}
@@ -245,12 +252,20 @@ function GlobalChat() {
             message={messages}
           />
         )}
-        {/* view image */}
-        {
-          isActive && <ViewImage imgUrl={imageUrl} setisActive={setisActive}/>
-        }
       </div>
     </div>
+     {/* view image */}
+          <AnimatePresence>
+          {
+          isActive && <motion.div 
+          initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+          >
+            <ViewImage imgUrl={imageUrl} setisActive={setisActive}/>
+          </motion.div>
+          }
+          </AnimatePresence>
     </>
   );
 }
