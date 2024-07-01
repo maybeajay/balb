@@ -42,6 +42,8 @@ function Signup() {
   const [isLoading, setisLoading] = useState<boolean>(false);
   const [file, setFile] = useState<string | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
+  const [canSendReq, setcanSendReq] = useState<boolean>(false);
+  const [publicUrl, setpublicUrl] = useState<string>("")
   const ref = useRef();
   const [errors, setErrors] = useState<Errors>({
     emailErr: null,
@@ -247,6 +249,12 @@ function Signup() {
       })
     if(data){
       console.log("data", data);
+      const  publicURL  = supabase.storage.from('avatar/dp').getPublicUrl(file?.name);
+      console.log("PUVADASSD", publicURL)
+      if(publicURL!=undefined){
+        setcanSendReq(true);
+        setpublicUrl(publicURL)
+      }
     }
     if (error) {
       console.error('Error uploading file:', error)
@@ -262,11 +270,15 @@ function Signup() {
 
   const adduserToDB = async() => {
     try {
+      await uploadAvatar(file)
       const { data, error } = await supabase
         .from("users")
-        .insert([{ user_name: userData.userName, first_name: userData.first_name, last_name: userData.last_name, created_at: new Date(), profile_url: uploadAvatar(file)}])
+        .insert([{ user_name: userData.userName, first_name: userData.first_name, last_name: userData.last_name, created_at: new Date(), profile_url: publicUrl}])
         .select();
-    } catch (error) {}
+        console.log("DATA", data)
+    } catch (error) {
+      console.log("ERRRR", error);
+    }
   };
 
   const handleImage = (e: React.SyntheticEvent) => {

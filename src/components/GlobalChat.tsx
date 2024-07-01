@@ -30,10 +30,12 @@ function GlobalChat() {
   const [errors, setErrors] = useState(null);
   const [showModal, setshowModal] = useState<boolean>(false);
   const [uniqueId, setuniqueId] = useState<number | null>(null);
+  const [currUser, setcurrUser] = useState([]);
   const { userData } = useSelector((state: any) => state.user);
   const [isActive, setisActive] = useState<boolean>(false);
   const [imageUrl, setimageUrl] = useState<string | null>("");
   const [isnewMessage, setisNewMessage] = useState<boolean>(false)
+  const [senderId, setsenderId] = useState<string>('')
   const [showOptions, setshowOptions] = useState<boolean[]>(
     Array(messages.length).fill(false)
   );
@@ -52,6 +54,13 @@ function GlobalChat() {
       console.log("ERRR___>>>", error);
     }
   };
+  const getCurrentUser = async()=>{
+    let { data: users, error } = await supabase
+  .from('users')
+  .select("*")
+  .eq("id", userData?.id)
+  setcurrUser(users);
+  }
   const subscribeToRealtime = async () => {
     try {
       const channels = supabase
@@ -66,7 +75,6 @@ function GlobalChat() {
                   message.id === payload.old?.id ||
                   message.id === payload.new.id
               );
-              setisNewMessage(true);
               if (payload.new.is_deleted) {
                 // If the new payload indicates the message is deleted
                 if (index !== -1) {
@@ -88,7 +96,9 @@ function GlobalChat() {
                   }
                 } else {
                   // Add the new message to the messages array
-                  console.log("New message added:", payload.new);
+                  setisNewMessage(true);
+                  setsenderId(payload.new);
+                  console.log("YSEERRR", userData, "SENDERR", senderId);
                   return [...prevMessages, payload.new];
                 }
               }
@@ -105,6 +115,7 @@ function GlobalChat() {
   useEffect(() => {
     fetchAllMessages();
     subscribeToRealtime();
+    getCurrentUser();
   }, []);
 
   const formateDate = (date: string) => {
@@ -132,7 +143,6 @@ function GlobalChat() {
   };
 
   const handleCloseModal = (uuid: number) => {
-    console.log(uuid);
     setuniqueId(uuid);
     setshowModal(true);
   };
@@ -183,9 +193,11 @@ function GlobalChat() {
                         >
                           <div
                             className={`rounded-md min-w-[18vw] ${
-                              userData?.user.id === msg?.sender_id
-                                ? "bg-[#7678ed] text-white"
-                                : "bg-gray-300 text-black"
+                              msg?.message
+                                ? userData?.user.id === msg?.sender_id
+                                  ? "bg-[#7678ed] text-white"
+                                  : "bg-gray-300 text-black"
+                                : ""
                             }`}
                             onMouseEnter={() => handleMouseOver(ind)}
                             onMouseLeave={() => handleMouseLeave(ind)}
@@ -213,7 +225,7 @@ function GlobalChat() {
                                 {msg?.is_deleted !== true
                                   ? msg?.message
                                   : "this message was deleted"}
-                              </span> : <img src={msg?.document} alt="image-file" onClick={()=>handleImageModal(msg?.document)} className="hover:cursor-pointer"/>}
+                              </span> : <img src={msg?.document} alt="image-file" onClick={()=>handleImageModal(msg?.document)} className="hover:cursor-pointer image-shadow"/>}
                               <p className="px-4 py-2 rounded-lg inline-block rounded-br-none p-5 text-end">
                                 {formateDate(msg?.created_at)}
                               </p>
@@ -237,21 +249,29 @@ function GlobalChat() {
             </div>
           </div>
           {
-            isnewMessage && <motion.div>
+            (isnewMessage && !userData.user?.id )&& <motion.div>
               <p>New Message</p>
             </motion.div>
           }
         </div>
         <ChatInput />
         {/* Delete Modal */}
+        <AnimatePresence>
         {showModal && (
+          <motion.div 
+          initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+          >
           <DeleteModal
             setshowModal={setshowModal}
             uuid={uniqueId}
             setMessages={setMessages}
             message={messages}
           />
+          </motion.div>
         )}
+        </AnimatePresence>
       </div>
     </div>
      {/* view image */}

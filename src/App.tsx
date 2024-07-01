@@ -10,6 +10,7 @@ import { Provider, useDispatch, useSelector } from "react-redux";
 import { getData, setLoading } from "./slices/userSlice";
 import { useEffect } from "react";
 import Header from "./components/Header";
+import { Toaster } from "react-hot-toast";
 function UnAuthRoutes() {
   return(
   useRoutes([
@@ -57,6 +58,7 @@ function App() {
   
   return (
     <Provider store={store}>
+      <Toaster />
       <HashRouter>
       <FinalRoutes />
       </HashRouter>
