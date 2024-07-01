@@ -80,10 +80,15 @@ const ChatInput = () => {
   let isDisabled = false
   // for uploading images in the chats
   const handleImageUpload = (e:React.SyntheticEvent)=>{
+    try{
+    setisLoading(true)
     const file = e.target.files[0];
     setImage(file);
     const objectUrl = URL.createObjectURL(file);
     setimagePreview(objectUrl);
+    }finally{
+      setisLoading(false);
+    }
   }
   return (
     <div className="border-t border-gray-200 px-6 py-3 flex flex-col justify-between">
@@ -96,7 +101,7 @@ const ChatInput = () => {
         onChange={(e)=>handleChange(e)}
       />
       {
-        imagePreview && <div className='w-1/5 h-1/5 absolute z-20'>
+        imagePreview && <div className='w-1/5 h-1/5 absolute z-20 right-[30vh] bottom-[20vh]'>
           <img src={imagePreview} alt='image'/>
           </div>
       }

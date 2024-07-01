@@ -8,6 +8,7 @@ import { addToLocal, setLoading } from "../slices/userSlice.js";
 import Loader from "../shared/Loader.js";
 import {motion} from 'framer-motion'
 import { FcGoogle } from "react-icons/fc";
+import { catchErrors } from "../slices/errorsSlice.js";
 type credsType = {
   email: string | undefined;
   password: string | undefined;
@@ -84,8 +85,12 @@ function Login() {
           dispatch(setLoading(false));
           navigation("/");
         }
+        if(error){
+          console.log("ERR", error)
+          dispatch(catchErrors(error.message))
+        }
       } catch (error) {
-        console.error(error);
+        console.error("error", error);
       }finally{
         setisLoading(false);
       }

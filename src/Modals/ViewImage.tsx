@@ -13,9 +13,9 @@ const ViewImage = ({imgUrl, setisActive}: Props) => {
   className="fixed inset-0 z-50 flex items-center justify-center bg-gray-800 bg-opacity-75"
   data-dialog-target="image-dialog"
 >
-  <div className="relative h-auto p-4 shadow-md cursor-pointer rounded-xl bg-white flex items-center justify-center w-2/5 -2/5">
+  <div className="relative h-auto p-4 shadow-md cursor-pointer rounded-xlflex items-center justify-center w-2/5 -2/5">
     <button
-      className="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
+      className="absolute top-4 right-4 text-black hover:text-gray-700"
       onClick={()=>setisActive(false)}
     >
       <svg
