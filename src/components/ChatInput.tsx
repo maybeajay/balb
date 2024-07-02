@@ -76,8 +76,9 @@ const ChatInput = () => {
     setMessage(e.target.value);
   }
 
-  // let isDisabled =  (imagePreview!="" ? false : true) || (message.trim().length<=0 ? true : false) ;
-  let isDisabled = false
+  let isDisabled = (message.trim().length <= 0) && (imagePreview == "");
+  console.log(isDisabled, imagePreview)
+  // let isDisabled = false
   // for uploading images in the chats
   const handleImageUpload = (e:React.SyntheticEvent)=>{
     try{

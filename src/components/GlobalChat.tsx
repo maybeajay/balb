@@ -216,7 +216,7 @@ function GlobalChat() {
                                 </div>
                               )}
                             <p className="text-xs p-2 mr-3">
-                              {userData?.user.id === msg.sender_id
+                              {userData?.user?.id && userData?.user.id === msg.sender_id
                                 ? "You"
                                 : `${messages.user?.firstName} ${messages.user?.lastName}`}
                             </p>
@@ -225,7 +225,7 @@ function GlobalChat() {
                                 {msg?.is_deleted !== true
                                   ? msg?.message
                                   : "this message was deleted"}
-                              </span> : <img src={msg?.document} alt="image-file" onClick={()=>handleImageModal(msg?.document)} className="hover:cursor-pointer image-shadow"/>}
+                              </span> : <img src={msg?.document} alt="image-file" onClick={()=>handleImageModal(msg?.document)} className="hover:cursor-pointer image-shadow w-[50vw] h-[40vh] object-cover"/>}
                               <p className="px-4 py-2 rounded-lg inline-block rounded-br-none p-5 text-end">
                                 {formateDate(msg?.created_at)}
                               </p>
