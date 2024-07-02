@@ -10,10 +10,10 @@ const ViewImage = ({imgUrl, setisActive}: Props) => {
   return (
     <>
  <div
-  className="fixed inset-0 z-50 flex items-center justify-center bg-gray-800 bg-opacity-75"
+  className="fixed inset-0 z-50 flex items-center justify-center w-4/5 mx-auto my-auto backdrop-blur-sm "
   data-dialog-target="image-dialog"
 >
-  <div className="relative h-auto p-4 shadow-md cursor-pointer rounded-xlflex items-center justify-center w-2/5 -2/5">
+  <div className="relative p-4 shadow-md cursor-pointer rounded-xlflex items-center justify-center w-2/5 object-contain">
     <button
       className="absolute top-4 right-4 text-black hover:text-gray-700"
       onClick={()=>setisActive(false)}
