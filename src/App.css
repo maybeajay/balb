@@ -1,11 +1,19 @@
+@import url('https://fonts.googleapis.com/css2?family=Fustat:wght@200..800&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
 .profile_box_Shadow{
     box-shadow: rgba(17, 12, 46, 0.15) 0px 48px 100px 0px;
 }
 
 .image-shadow{
     box-shadow: rgba(0, 0, 0, 0.15) 0px 15px 25px, rgba(0, 0, 0, 0.05) 0px 5px 10px;
+}
+
+.title{
+  font-family: "Fustat", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 8;
+  font-style: normal;
 }

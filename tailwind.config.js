@@ -17,7 +17,10 @@ export default {
       },
       container:{
         padding: '2rem',
-      }
+      },
+      fontFamily: {
+        sans: ["Fustat", "sans-serif"],
+      },
     },
   },
   plugins: [],
