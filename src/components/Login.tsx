@@ -365,7 +365,7 @@ function Login() {
                   <motion.div className="w-full px-3 mb-5" >
                     <Link
                       to={"/signup"}
-                      className="mx-10 hover:text-indigo-500"
+                      className="mx-10 hover:text-purple-600"
                     >
                       Didn't have an account? Sign up instead
                     </Link>
@@ -373,7 +373,7 @@ function Login() {
                       whileTap={{ scale: 0.9 }}
                       drag="x"
                       dragConstraints={{ left: -100, right: 100 }}
-                      className="block w-1/4 max-w-xs mx-auto bg-indigo-500 hover:bg-indigo-700 focus:bg-indigo-700 text-white rounded-lg px-3 py-3 font-semibold mt-5"
+                      className="block w-1/4 max-w-xs mx-auto bg-purple-600 hover:bg-purple-700 focus:bg-purple-700 text-white rounded-lg px-3 py-3 font-semibold mt-5"
                       onClick={handleSubmit}
                       disabled={isLoading}
                     >
@@ -386,7 +386,7 @@ function Login() {
                     <p>OR</p>
                     <hr className="w-2/5"></hr>
                     </div>
-                    <motion.button className="w-1/4 max-w-xs mx-auto text-black rounded-lg px-3 py-3 font-semibold mt-5 border-indigo-500 border flex items-center justify-center gap-3" onClick={()=>handleGoogleLogin()}>
+                    <motion.button className="w-1/4 max-w-xs mx-auto text-black rounded-lg px-3 py-3 font-semibold mt-5 border-purple-600 border flex items-center justify-center gap-3" onClick={()=>handleGoogleLogin()}>
                       Continue With Google
                       <FcGoogle size={20}/>
                     </motion.button>

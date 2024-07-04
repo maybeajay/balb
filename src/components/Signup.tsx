@@ -651,7 +651,7 @@ function Signup() {
               </div>
               <div className="flex mt-5 mx-5">
                 <div className="w-full px-3 mb-5">
-                  <Link to={"/login"} className="hover:text-indigo-500">
+                  <Link to={"/auth/login"} className="hover:text-indigo-500">
                     Already a user? Login instead
                   </Link>
                   <motion.button

@@ -11,10 +11,12 @@ import { getData, setLoading } from "./slices/userSlice";
 import { useEffect } from "react";
 import Header from "./components/Header";
 import { Toaster } from "react-hot-toast";
+import HomeScreen from "./components/HomeScreen";
 function UnAuthRoutes() {
   return(
   useRoutes([
-    {path: '/', element: <Login />},
+    {path: '/', element: <HomeScreen />},
+    {path: "/auth/login", element: <Login />},
     {path:"/signup", element:<Signup />},
     {path: "/verify-email", element: <VerifyEmail />},
     {path: "*", element: <Navigate to={'/'} replace/>}
