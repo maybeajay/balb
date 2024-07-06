@@ -202,7 +202,7 @@ function GlobalChat() {
                           <div
                             className={`rounded-md min-w-[18vw] ${
                               msg?.message
-                                ? userData?.user.id === msg?.sender_id
+                                ? userData && userData?.user && userData?.user.id === msg?.sender_id
                                   ? "bg-[#7678ed] text-white"
                                   : "bg-gray-300 text-black"
                                 : ""
