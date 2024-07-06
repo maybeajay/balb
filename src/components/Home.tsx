@@ -7,7 +7,7 @@ type Props = {}
 function Home({}: Props) {
   const [currentPage, setCurrentPage] = useState("Individual");
   return (
-    <div className='container gap-10 justify-between'>
+    <div className='containe justify-between'>
       <section className='flex justify-around mt-10 ease-in-out'>
         <div   className={`${currentPage === "Global" ? 'bg-violet-500' : 'bg-gray-400'} border-white rounded-lg w-[15%] h-[50px] text-center text-white cursor-pointer flex items-center justify-center gap-3 transition-all ease-in-out`}
           onClick={() => setCurrentPage("Global")}>
@@ -23,7 +23,7 @@ function Home({}: Props) {
         </div>
         </section>
 
-        <main className='h-[80vh]'>
+        <main>
           {
             currentPage =="Global" ? <>    <p className='text-center font-sm mt-2 text-[#9ca3af] text-md'>Do not share personal information here</p>
             <p className='text-center font-sm text-[#9ca3af] text-sm'>You can delete a message upto 15 minutes</p>

@@ -5,8 +5,9 @@ import {supabase} from "../../supabase.js"
 import PickEmoji from '../shared/PickEmoji.js';
 import { HiOutlineUpload } from "react-icons/hi";
 import Loader from '../shared/Loader.js';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import {motion} from 'framer-motion'
+import { catchErrors } from '../slices/errorsSlice.js';
 const ChatInput = () => {
   const [message, setMessage] = useState<string>("");
   const [isLoading ,setisLoading] = useState<boolean>(false);
@@ -15,6 +16,7 @@ const ChatInput = () => {
   const [imagePreview, setimagePreview] = useState('');
   const [image, setImage] = useState('')
   const uploadRef = useRef();
+  const dispatch = useDispatch();
   async function addMessage(imageURl:string) {
       try {
         setisLoading(true);
@@ -46,7 +48,9 @@ const ChatInput = () => {
   }
 
   async function uploadImage(file:string){
-    const { data, error } = await supabase
+    try {
+      setisLoading(true);
+      const { data, error } = await supabase
     .storage
     .from('balb_document/images')
     .upload(file?.name,file, {
@@ -60,9 +64,17 @@ const ChatInput = () => {
   }
   if (error) {
     console.error('Error uploading file:', error)
+    dispatch(catchErrors("Error uploading File"))
+    setImage("");
+    setimagePreview("");
     return null
   }
   return data?.fullPath
+    } catch (error) {
+      
+    }finally{
+      setisLoading(false);
+    }
   }
 
   const handleMessageSend = async ()=>{
@@ -77,7 +89,6 @@ const ChatInput = () => {
   }
 
   let isDisabled = (message.trim().length <= 0) && (imagePreview == "");
-  console.log(isDisabled, imagePreview)
   // let isDisabled = false
   // for uploading images in the chats
   const handleImageUpload = (e:React.SyntheticEvent)=>{

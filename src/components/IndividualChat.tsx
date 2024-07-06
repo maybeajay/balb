@@ -1,25 +1,52 @@
-import React from 'react'
+import React, { useState } from 'react'
+import SideNav from './SideNav'
+import { supabase } from "../supabase.js";
+import UserSeachResults from '../shared/UserSeachResults.js';
 
-type Props = {}
+type userSearchResults = {
+  user_name: string | undefined,
+  first_name: string | undefined,
+  last_name: string | undefined,
+  profile_url: string | undefined
+}
 
-function IndividualChat({}: Props) {
+function IndividualChat() {
+  const [searchVal, setsearchVal] = useState<string>("");
+  const [searchRes, setsearchRes] = useState<userSearchResults[]>([])
+  const searchByUsername = async (username:string)=>{
+    try {
+      let { data: users, error } = await supabase
+        .from('users')
+        .select("*")
+        .eq('user_name', username.trim());
+        setsearchRes(users);
+        if(error){
+          console.log("ERR", error)
+        }
+                
+    } catch (error) {
+      console.log("ERR", error);
+    }
+  }
+  const handleChange = (e:React.ChangeEvent<HTMLInputElement>)=>{
+    setsearchVal(e.target.value);
+    if(searchVal.length >=2){
+      searchByUsername(e.target.value);
+    }
+  }
   return (
-    <div><div className="chat-message">
-    <div className="flex items-end">
-      <div className="flex flex-col space-y-2 text-xs max-w-xs mx-2 order-2 items-start">
-        <div>
-          <span className="px-4 py-2 rounded-lg inline-block rounded-bl-none bg-gray-300 text-gray-600">
-            Can be verified on any platform using docker
-          </span>
-        </div>
-      </div>
-      <img
-        src="https://images.unsplash.com/photo-1549078642-b2ba4bda0cdb?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=3&w=144&h=144"
-        alt="My profile"
-        className="w-6 h-6 rounded-full order-1"
-      />
-    </div>
-  </div></div>
+    <>
+    {/* <SideNav /> */}
+    <main>
+      <input type='text' name='searchName' value={searchVal} onChange={(e)=>handleChange(e)} className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500'/>
+
+      {/* section for search users */}
+     {/* if search resuklts is greater than 0 then only show results component*/}
+     {
+      searchRes.length >=1  && <UserSeachResults users={searchRes}/>
+     }
+    </main>
+    </>
   )
 }
 
