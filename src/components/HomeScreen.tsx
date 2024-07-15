@@ -22,7 +22,7 @@ const HomeScreen = () => {
           <div className="w-[40%] p-10 justify-center flex flex-col xs:w-[100%]">
             <p className="text-3xl text-wrap max-w-[60%] leading-relaxed font-futsat">
               Balb is the new way to{" "}
-              <span className="bg-purple-500 select-none font-semibold text-white">
+              <span className="bg-purple-500 select-none font-semibold text-white pl-3 pr-3">
                 Communicate 
               </span>{" "}
               With Your 

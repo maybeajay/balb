@@ -1,5 +1,6 @@
 import  { useEffect } from 'react'
 import { LuUser } from 'react-icons/lu'
+import { Link } from 'react-router-dom'
 
 type Props = {
     users: any
@@ -14,7 +15,7 @@ export default function UserSeachResults({users}: Props) {
     <div className='flex justify-between items-center'>
     {
         users.map((item)=>(
-      <ul role="list" className="divide-y divide-gray-200 dark:divide-gray-700">
+      <ul role="list" className="divide-y divide-gray-200 dark:divide-gray-700" key={item?.id}>
       <li className="py-3 sm:py-4">
         <div className="flex items-center">
           <div className="flex-shrink-0">
@@ -27,9 +28,11 @@ export default function UserSeachResults({users}: Props) {
             }
           </div>
           <div className="flex-1 min-w-0 ms-4 hover:cursor-pointer">
+            <Link to={`/profile/${item?.user_name}`}>
             <p className="text-sm font-medium text-gray-900 truncate hover:text-purple-500 ">
             {item?.user_name}
             </p>
+            </Link>
             <p className="text-sm text-gray-500 truncate dark:text-gray-400">
               email@windster.com
             </p>

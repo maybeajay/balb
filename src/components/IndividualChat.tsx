@@ -2,6 +2,8 @@ import React, { useState } from 'react'
 import SideNav from './SideNav'
 import { supabase } from "../supabase.js";
 import UserSeachResults from '../shared/UserSeachResults.js';
+import FriendRequest from '../shared/FriendRequest.js';
+import Notifications from '../shared/Notifications.js';
 
 type userSearchResults = {
   user_name: string | undefined,
@@ -37,14 +39,24 @@ function IndividualChat() {
   return (
     <>
     {/* <SideNav /> */}
-    <main>
-      <input type='text' name='searchName' value={searchVal} onChange={(e)=>handleChange(e)} className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500'/>
+    <main className='w-full h-screen'>
+
+      <div className="">
+      <SideNav />
+     <div>
+     <input type='text' name='searchName' value={searchVal} onChange={(e)=>handleChange(e)} className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500'/>
+     </div>
 
       {/* section for search users */}
      {/* if search resuklts is greater than 0 then only show results component*/}
      {
       searchRes.length >=1  && <UserSeachResults users={searchRes}/>
      }
+     {/* Pending Friend Requests */}
+     {/* <FriendRequest /> */}
+
+     {/* <Notifications /> */}
+     </div>
     </main>
     </>
   )
