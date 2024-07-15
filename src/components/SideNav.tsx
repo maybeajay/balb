@@ -3,16 +3,6 @@ export default function SideNav() {
     <>
   <div className="flex flex-col h-full p-3 w-60 dark:bg-gray-50 dark:text-gray-800">
 	<div className="space-y-3">
-		<div className="flex items-center justify-between">
-			<h2>Dashboard</h2>
-			<button className="p-2">
-				<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" className="w-5 h-5 fill-current dark:text-gray-800">
-					<rect width="352" height="32" x="80" y="96"></rect>
-					<rect width="352" height="32" x="80" y="240"></rect>
-					<rect width="352" height="32" x="80" y="384"></rect>
-				</svg>
-			</button>
-		</div>
 		<div className="relative">
 			<span className="absolute inset-y-0 left-0 flex items-center py-4">
 				<button type="submit" className="p-2 focus:outline-none focus:ring">

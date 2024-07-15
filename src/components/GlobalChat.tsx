@@ -200,13 +200,13 @@ function GlobalChat() {
                           }`}
                         >
                           <div
-                            className={`rounded-md min-w-[18vw] ${
+                            className={`min-w-[18vw] ${
                               msg?.message
                                 ? userData && userData?.user && userData?.user.id === msg?.sender_id
                                   ? "bg-[#7678ed] text-white"
                                   : "bg-gray-300 text-black"
                                 : ""
-                            }`}
+                            } rounded-md custom-rounded`}
                             onMouseEnter={() => handleMouseOver(ind)}
                             onMouseLeave={() => handleMouseLeave(ind)}
                           >

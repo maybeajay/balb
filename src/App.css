@@ -22,3 +22,6 @@
   font-weight: 8;
   font-style: normal;
 }
+.custom-rounded{
+  border-bottom-left-radius: 20px;
+}
