@@ -1,5 +1,5 @@
 import "./App.css";
-import { useRoutes, Navigate, HashRouter } from "react-router-dom";
+import { useRoutes, Navigate, BrowserRouter } from "react-router-dom";
 import Login from "./components/Login";
 import Signup from "./components/Signup";
 import Home from "./components/Home";
@@ -63,9 +63,9 @@ function App() {
   return (
     <Provider store={store}>
       <Toaster />
-      <HashRouter>
+      <BrowserRouter>
       <FinalRoutes />
-      </HashRouter>
+      </BrowserRouter>
     </Provider>
   );
 }
