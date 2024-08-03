@@ -13,6 +13,7 @@ import Header from "./components/Header";
 import { Toaster } from "react-hot-toast";
 import HomeScreen from "./components/HomeScreen";
 import ProfilePage from "./components/ProfilePage";
+import MyPrfofile from "./components/Profile";
 function UnAuthRoutes() {
   return(
   useRoutes([
@@ -31,6 +32,7 @@ function AfterAuthRoutes() {
     {path: "/", element:<Home />},
     {path: "/chat", element: <Chat />},
     {path: "/profile/:id", element: <ProfilePage />},
+    {path: "/profile/me", element: <MyPrfofile />},
     {path: "*", element: <Navigate to={'/'} replace/>},
   ])
   )
