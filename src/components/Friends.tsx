@@ -9,8 +9,11 @@ function Friends() {
         let { data: users, error } = await supabase
         .from('users')
         .select()
-        .eq("id", friendsData[0].id);
+        .eq("id", friendsData[0]?.id);
+        if(!error)
         setmyFriends(users);
+        console.log("asdas", users)
+        console.log("ERR", error);
     }
     useEffect(()=>{
         (async function getUserFriends(){
@@ -22,7 +25,7 @@ function Friends() {
                 .eq("is_accepted", true)
                 .eq("is_pending", false)
                 setfriendsData(friends);
-        
+                console.log(friends);
                 if(error){
                     catchErrors(error.message);
                 }
@@ -34,7 +37,30 @@ function Friends() {
         friendsData.length > 0 && getFriends();
     }, [])
   return (
-    <div>Friends</div>
+    <div>
+          <h2 className="text-sm font-semibold text-gray-600 mb-2">
+            All Chats
+          </h2>
+          <ul>
+            <li className="flex items-center p-2 hover:bg-gray-100 rounded-md cursor-pointer">
+              <img
+                src="https://via.placeholder.com/32"
+                className="w-10 h-10 rounded-full mr-2"
+                alt="User"
+              />
+              <div className="flex-1">
+                <div className="flex justify-between items-center">
+                  <h3 className="text-sm font-semibold">Hamed</h3>
+                  <span className="text-xs text-gray-400">12:30 PM</span>
+                </div>
+                <p className="text-xs text-gray-500">
+                  Thank you very much, I am...
+                </p>
+              </div>
+            </li>
+            
+          </ul>
+        </div>
   )
 }
 

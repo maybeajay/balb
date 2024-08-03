@@ -11,7 +11,7 @@ export default function UserSeachResults({users}: Props) {
 
   }
   return (
-   <div className='flex flex-row p-3'>
+   <div className='flex flex-row p-3 relative z-55'>
     <div className='flex justify-between items-center'>
     {
         users.map((item)=>(
