@@ -5,6 +5,7 @@ import UserSeachResults from '../shared/UserSeachResults.js';
 import FriendRequest from '../shared/FriendRequest.js';
 import Notifications from '../shared/Notifications.js';
 import Friends from './Friends.js';
+import ChatBox from './ChatBox.js';
 
 type userSearchResults = {
   user_name: string | undefined,
@@ -40,9 +41,10 @@ function IndividualChat() {
   return (
     <>
     {/* <SideNav /> */}
-    <main className='w-full h-screen'>
+    <main className='w-full'>
       <div className="flex">
       <SideNav />
+      <ChatBox/>
      </div>
 
       {/* section for search users */}
