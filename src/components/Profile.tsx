@@ -1,71 +1,66 @@
 import { useEffect, useState } from 'react';
-import { FaGlobe, FaTwitter, FaLinkedin, FaEnvelope, FaUserCheck, FaMapMarkerAlt } from 'react-icons/fa';
-import {supabase} from '../../supabase.js';
-import { MdOutlineVerified } from "react-icons/md";
-const MyPrfofile = () => {
-    const [profileData, setprofileData] = useState([]);
-      // get user details on render
-  useEffect(() => {
-    async function getprofileData() {
-      try {
-        let { data: users, error } = await supabase
-        .from("users")
-        .select('*')
-        .eq("id", "aabd8b96-518b-4357-ae47-03f3749c138c");
-        console.log("users", users)
-        if(!error){
-          setprofileData(users);
-        }
-      } catch (error) {
-        
-      }
-    }
+import { supabase } from '../../supabase.js';
 
-    getprofileData();
-  }, []);
-  return (
-    <div className="min-h-screen flex items-center justify-center">
-      <div className="rounded-lg p-8 w-full max-w-4xl">
-        <div className="flex flex-col items-center md:flex-row md:items-start">
-          <img className="w-32 h-32 rounded-full mb-4 md:mb-0 md:mr-8" src={profileData[0]?.profile_url} alt="Profile" />
-          <div>
-            <div className="flex items-center mb-2">
-              <h2 className="text-3xl font-bold">{profileData[0]?.user_name}</h2>
-              <MdOutlineVerified  className="text-green-500 ml-5 mt-2" />
+const MyProfile = () => {
+    const [profileData, setProfileData] = useState([]);
+
+    useEffect(() => {
+        async function getProfileData() {
+            try {
+                let { data: users, error } = await supabase
+                    .from("users")
+                    .select('*')
+                    .eq("id", "aabd8b96-518b-4357-ae47-03f3749c138c");
+                console.log("users", users);
+                if (!error) {
+                    setProfileData(users);
+                }
+            } catch (error) {
+                console.error(error);
+            }
+        }
+
+        getProfileData();
+    }, []);
+
+    return (
+        <div className="min-h-screen flex items-center justify-center">
+            <div className="w-full max-w-6xl p-6">
+                <div className="flex flex-col md:flex-row md:items-start mb-6">
+                    <img className="w-32 h-32 rounded-full mb-4 md:mb-0 md:mr-8" src={profileData[0]?.profile_url} alt="Profile" />
+                    <div>
+                        <p className="text-gray-500 mb-4">Image size limit should be 125kb max.</p>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div className="flex flex-col">
+                                <label className="mb-1">Last Name</label>
+                                <div className="p-2 text-gray-900">{profileData[0]?.last_name}</div>
+                            </div>
+                            <div className="flex flex-col">
+                                <label className="mb-1">First Name</label>
+                                <div className="p-2 text-gray-900">{profileData[0]?.first_name}</div>
+                            </div>
+                            <div className="flex flex-col">
+                                <label className="mb-1">Email Address</label>
+                                <div className="p-2 text-gray-900">{profileData[0]?.email}</div>
+                            </div>
+                            <div className="flex flex-col">
+                                <label className="mb-1">Phone Number</label>
+                                <div className="p-2 text-gray-900">{profileData[0]?.phone_number || 'N/A'}</div>
+                            </div>
+                            <div className="flex flex-col">
+                                <label className="mb-1">Company Name</label>
+                                <div className="p-2 text-gray-900">{profileData[0]?.company_name || 'N/A'}</div>
+                            </div>
+                            <div className="flex flex-col">
+                                <label className="mb-1">Site Information</label>
+                                <div className="p-2 text-gray-900">{profileData[0]?.website || 'N/A'}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div className="flex items-center mb-4">
-              <FaMapMarkerAlt className="text-gray-600 mr-2" />
-              <p className="text-gray-600">India, In</p>
-            </div>
-            <div className="flex space-x-4 mb-4">
-              <FaGlobe className="text-gray-600" />
-              <FaTwitter className="text-gray-600" />
-              <FaLinkedin className="text-gray-600" />
-              <FaEnvelope className="text-gray-600" />
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <h3 className="text-lg font-semibold text-gray-700">First Name</h3>
-                <p className="text-gray-600">{profileData[0]?.first_name}</p>
-              </div>
-              <div>
-                <h3 className="text-lg font-semibold text-gray-700">Last Name</h3>
-                <p className="text-gray-600">{profileData[0]?.last_name}</p>
-              </div>
-              <div>
-                <h3 className="text-lg font-semibold text-gray-700">Email</h3>
-                <p className="text-gray-600">{profileData[0]?.email}</p>
-              </div>
-              <div>
-                <h3 className="text-lg font-semibold text-gray-700">Joined At</h3>
-                <p className="text-gray-600">{new Date(profileData[0].created_at).toISOString()}</p>
-              </div>
-            </div>
-          </div>
         </div>
-      </div>
-    </div>
-  );
+    );
 };
 
-export default MyPrfofile;
+export default MyProfile;
