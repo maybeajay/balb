@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { supabase } from "../../supabase.js";
 import { format } from "date-fns";
+import EmptyMessage from "./EmptyMessage.js";
 type Props = {
   userId: string;
 };
@@ -103,17 +104,17 @@ function ChatBox({ userId }: Props) {
   }
 
   return (
-    <div className="container mx-auto">
-      <div className="flex flex-col w-full h-full mt-10 border-gray-50">
+    <div className="w-full">
+      <div className="flex flex-col h-[50vh] mt-10 border-gray-50">
         {/* Chat Messages */}
         <div className="flex-1 p-4 overflow-y-auto">
           <div className="flex flex-col space-y-4">
             {/* Sender Message */}
             {
-                messages.length >=1 && messages.map((msg, id)=> <div  className={`${msg?.sender_id === "aae35fae-8252-4b53-98bc-0267c482990c" ? "self-end bg-blue-500 text-white" : "self-start bg-gray-400 text-white"} max-w-xs p-3  rounded-l-lg rounded-br-lg shadow-md`} key={id}>
+                (messages.length >=1 && !isLoading) ? messages.map((msg, id)=> <div  className={`${msg?.sender_id === "aae35fae-8252-4b53-98bc-0267c482990c" ? "self-end bg-blue-500 text-white" : "self-start bg-gray-400 text-white"} max-w-xs p-3  rounded-l-lg rounded-br-lg shadow-md`} key={id}>
                 <p>{msg.content}</p>
-                <span className="text-xs text-gray-200">{format(msg?.created_at, "MM/dd/yyyy")}</span>
-              </div>)
+                <span className="text-xs text-gray-200">{msg?.created_at && format(msg?.created_at, "MM/dd/yyyy")}</span>
+              </div> )  : <EmptyMessage />
             }
           </div>
         </div>
