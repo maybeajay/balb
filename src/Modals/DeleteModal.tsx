@@ -3,13 +3,13 @@ import { supabase } from "../supabase.js";
 import Loader from "../shared/Loader.js";
 type Props = {
   setshowModal: Dispatch<SetStateAction<boolean>>;
-  uuid: number;
+  uuid: number | null;
   setMessages: Dispatch<SetStateAction<string>>
 };
 
 const DeleteModal = ({ setshowModal, uuid }: Props) => {
   const [isLoading, setisLoading] = useState<boolean>(false)
-  const deleteMessage = async (uid: number) => {
+  const deleteMessage = async (uid: number | null) => {
     try {
       setisLoading(true);
       const { data, error } = await supabase

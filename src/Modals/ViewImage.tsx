@@ -1,7 +1,7 @@
 import {Dispatch, SetStateAction} from 'react'
 
 type Props = {
-    imgUrl: string,
+    imgUrl: string | undefined,
     isActive: boolean,
     setisActive: Dispatch<SetStateAction<boolean>>
 }
@@ -37,6 +37,7 @@ const ViewImage = ({imgUrl, setisActive}: Props) => {
       alt="nature"
       className="object-cover object-center w-full h-full"
       src={imgUrl}
+      loading='lazy'
     />
   </div>
 </div>

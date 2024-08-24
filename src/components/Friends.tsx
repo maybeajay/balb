@@ -18,14 +18,14 @@ interface Friend {
 function Friends() {
   const [friendsData, setFriendsData] = useState<Friend>([]);
   const [myFriends, setMyFriends] = useState<User>([]);
-
+  const [acitveChat, setactiveChat] = useState<string>("");
   const getFriends = async () => {
     if (friendsData.length > 0) {
       const { data: users, error } = await supabase
         .from('users')
         .select()
         .eq('id', friendsData[0]?.user_id);
-
+        console.log(friendsData)
       if (error) {
         catchErrors(error.message);
       } else {
@@ -43,7 +43,6 @@ function Friends() {
           .eq('user_id', 'aae35fae-8252-4b53-98bc-0267c482990c')
           .eq('is_accepted', true)
           .eq('is_pending', false);
-          console.log("friends", friends)
         if (error) {
           catchErrors(error.message);
         } else {
@@ -57,6 +56,7 @@ function Friends() {
 
   useEffect(() => {
     getFriends();
+    setactiveChat(friendsData[0])
   }, [friendsData]);
 
   return (
@@ -65,22 +65,20 @@ function Friends() {
         All Chats
       </h2>
       <ul>
-        {myFriends.map((friend, index) => (
-          <li key={index} className="flex items-center p-2 hover:bg-gray-100 rounded-md cursor-pointer">
+        {myFriends.length>=1 && myFriends?.map((friend:any, index:number) => (
+          <li key={index} className={`${acitveChat?.friend_id == friendsData[0]?.friend_id  ? "bg-violet-500 text-white rounded-md" : "text-gray-500"} "flex items-center p-2 rounded-md cursor-pointer"`}>
+            <div className='flex flex-row items-center gap-5 p-3'>
             <img
-              src={friend?.profile_url}
-              className="w-10 h-10 rounded-full mr-2"
+              src={friend?.profile_url} 
+              className="w-10 h-10 rounded-full"
               alt="User"
+              loading='lazy'
             />
-            <div className="flex-1">
-              <div className="flex justify-between items-center">
+              <div className='flex  gap-5'>
                 <h3 className="text-sm font-semibold">{friend.user_name}</h3>
-                <span className="text-xs text-gray-400">12:30 PM</span>
+                <span className="text-xs">12:30 PM</span>
               </div>
-              <p className="text-xs text-gray-500">
-                Thank you very much, I am...
-              </p>
-            </div>
+              </div>
           </li>
         ))}
       </ul>
