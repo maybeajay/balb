@@ -22,7 +22,7 @@ type Data = {
     lastName: string;
   };
   sender_id: number | undefined;
-  document: string | null
+  document: string | undefined
   payload: {};
 };
 
@@ -34,7 +34,7 @@ function GlobalChat() {
   const [currUser, setcurrUser] = useState([]);
   const { userData } = useSelector((state: any) => state.user);
   const [isActive, setisActive] = useState<boolean>(false);
-  const [imageUrl, setimageUrl] = useState<string | null>("");
+  const [imageUrl, setimageUrl] = useState<string | undefined>("");
   const [isnewMessage, setisNewMessage] = useState<boolean>(false)
   const [senderId, setsenderId] = useState<string>('')
   const [isLoading, setisLoading] = useState<boolean>(false);
@@ -72,7 +72,7 @@ function GlobalChat() {
           "postgres_changes",
           { event: "*", schema: "public", table: "messages" },
           (payload) => {
-            setMessages((prevMessages) => {
+            setMessages((prevMessages:any) => {
               let index = prevMessages.findIndex(
                 (message) =>
                   message.id === payload.old?.id ||
@@ -159,7 +159,7 @@ function GlobalChat() {
     return isBefore(currentTime, deadline);
   };
 
-  const handleImageModal = (url: string | null)=>{
+  const handleImageModal = (url: string | undefined)=>{
     setimageUrl(url);
     setisActive(true);
   }
@@ -233,7 +233,7 @@ function GlobalChat() {
                                 {msg?.is_deleted !== true
                                   ? msg?.message
                                   : "this message was deleted"}
-                              </span> : <img src={msg?.document} alt="image-file" onClick={()=>handleImageModal(msg?.document)} className="hover:cursor-pointer image-shadow w-[50vw] h-[40vh] object-cover"/>}
+                              </span> : <img src={msg?.document} alt="image-file" onClick={()=>handleImageModal(msg?.document)} className="hover:cursor-pointer image-shadow w-[50vw] h-[40vh] object-cover" loading="lazy"/>}
                               <p className="px-4 py-2 rounded-lg inline-block rounded-br-none p-5 text-end">
                                 {formateDate(msg?.created_at)}
                               </p>
@@ -291,7 +291,7 @@ function GlobalChat() {
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
           >
-            <ViewImage imgUrl={imageUrl} setisActive={setisActive}/>
+            <ViewImage imgUrl={imageUrl} setisActive={setisActive} isActive={isActive}/>
           </motion.div>
           }
           </AnimatePresence>

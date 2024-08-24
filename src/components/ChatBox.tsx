@@ -19,7 +19,7 @@ function ChatBox({ userId }: Props) {
           "postgres_changes",
           { event: "*", schema: "public", table: "individual_chats" },
           (payload) => {
-            setMessage((prevMessages) => {
+            setMessage((prevMessages:any) => {
               let index = prevMessages.findIndex(
                 (message) =>
                   message.id === payload.old?.id ||
@@ -111,7 +111,7 @@ function ChatBox({ userId }: Props) {
           <div className="flex flex-col space-y-4">
             {/* Sender Message */}
             {
-                (messages.length >=1 && !isLoading) ? messages.map((msg, id)=> <div  className={`${msg?.sender_id === "aae35fae-8252-4b53-98bc-0267c482990c" ? "self-end bg-blue-500 text-white" : "self-start bg-gray-400 text-white"} max-w-xs p-3  rounded-l-lg rounded-br-lg shadow-md`} key={id}>
+                (messages.length >=1 && !isLoading) ? messages.map((msg:any, id)=> <div  className={`${msg?.sender_id === "aae35fae-8252-4b53-98bc-0267c482990c" ? "self-end bg-blue-500 text-white" : "self-start bg-gray-400 text-white"} max-w-xs p-3  rounded-l-lg rounded-br-lg shadow-md`} key={id}>
                 <p>{msg.content}</p>
                 <span className="text-xs text-gray-200">{msg?.created_at && format(msg?.created_at, "MM/dd/yyyy")}</span>
               </div> )  : <EmptyMessage />

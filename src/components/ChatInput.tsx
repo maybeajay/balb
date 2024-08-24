@@ -1,4 +1,4 @@
-import React, { ReactEventHandler, useRef, useState } from 'react'
+import React, {ChangeEvent, useRef, useState } from 'react'
 import { LuSendHorizonal } from "react-icons/lu";
 import { FaRegLaugh } from "react-icons/fa";
 import {supabase} from "../../supabase.js"
@@ -6,7 +6,6 @@ import PickEmoji from '../shared/PickEmoji.js';
 import { HiOutlineUpload } from "react-icons/hi";
 import Loader from '../shared/Loader.js';
 import { useDispatch, useSelector } from 'react-redux';
-import {motion} from 'framer-motion'
 import { catchErrors } from '../slices/errorsSlice.js';
 const ChatInput = () => {
   const [message, setMessage] = useState<string>("");
@@ -47,7 +46,7 @@ const ChatInput = () => {
       }
   }
 
-  async function uploadImage(file:string){
+  async function uploadImage(file:HTMLInputElement){
     try {
       setisLoading(true);
       const { data, error } = await supabase
@@ -91,7 +90,7 @@ const ChatInput = () => {
   let isDisabled = (message.trim().length <= 0) && (imagePreview == "");
   // let isDisabled = false
   // for uploading images in the chats
-  const handleImageUpload = (e:React.SyntheticEvent)=>{
+  const handleImageUpload = (e:ChangeEvent<HTMLInputElement>)=>{
     try{
     setisLoading(true)
     const file = e.target.files[0];
