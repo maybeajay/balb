@@ -6,7 +6,8 @@ import FriendRequest from '../shared/FriendRequest.js';
 import Notifications from '../shared/Notifications.js';
 import Friends from './Friends.js';
 import ChatBox from './ChatBox.js';
-
+import { useSelector } from 'react-redux';
+import {debounce} from "../utils/constants"
 type userSearchResults = {
   user_name: string | undefined,
   first_name: string | undefined,
@@ -17,6 +18,7 @@ type userSearchResults = {
 function IndividualChat() {
   const [searchVal, setsearchVal] = useState<string>("");
   const [searchRes, setsearchRes] = useState<userSearchResults[]>([])
+  const activeChat = useSelector(state=>state?.user?.activeChat);
   const searchByUsername = async (username:string)=>{
     try {
       let { data: users, error } = await supabase
@@ -32,19 +34,14 @@ function IndividualChat() {
       console.log("ERR", error);
     }
   }
-  const handleChange = (e:React.ChangeEvent<HTMLInputElement>)=>{
-    setsearchVal(e.target.value);
-    if(searchVal.length >=2){
-      searchByUsername(e.target.value);
-    }
-  }
+
   return (
     <>
     {/* <SideNav /> */}
     <main className='w-full'>
       <div className="flex">
       <SideNav />
-      <ChatBox/>
+     {activeChat &&  <ChatBox />} 
      </div>
 
       {/* section for search users */}

@@ -19,9 +19,7 @@ const errorSlice = createSlice({
             state.loading = action.payload;
         },
         catchErrors: (state, action: PayloadAction<string>) => {
-            console.log('ac', action.payload)
             state.error = action.payload;
-            console.log("Error:", action.payload);
             toast.error(action.payload);
         }
     }

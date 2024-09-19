@@ -244,7 +244,7 @@ function Signup() {
     const { data, error } = await supabase
       .storage
       .from('avatar/dp')
-      .upload(file?.name,file, {
+      .upload(`${file?.name+Date.now()*1000}`,file, {
         cacheControl: '3600'
       })
     if(data){
@@ -271,11 +271,11 @@ function Signup() {
   const adduserToDB = async() => {
     try {
       await uploadAvatar(file)
-      const { data, error } = await supabase
-        .from("users")
-        .insert([{ user_name: userData.userName, first_name: userData.first_name, last_name: userData.last_name, created_at: new Date(), profile_url: publicUrl}])
-        .select();
-        console.log("DATA", data)
+      // const { data, error } = await supabase
+      //   .from("users")
+      //   .insert([{ user_name: userData.userName, first_name: userData.first_name, last_name: userData.last_name, created_at: new Date(), profile_url: publicUrl}])
+      //   .select();
+      //   console.log("DATA", data)
     } catch (error) {
       console.log("ERRRR", error);
     }

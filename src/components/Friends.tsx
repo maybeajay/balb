@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { supabase } from '../../supabase.js';
 import { catchErrors } from '../slices/errorsSlice';
-
+import { useDispatch } from 'react-redux';
+import { activeChat } from '../slices/userSlice.js';
 interface User {
   id: string;
   username: string;
@@ -18,7 +19,7 @@ interface Friend {
 function Friends() {
   const [friendsData, setFriendsData] = useState<Friend>([]);
   const [myFriends, setMyFriends] = useState<User>([]);
-  const [acitveChat, setactiveChat] = useState<string>("");
+  const dispatch = useDispatch();
   const getFriends = async () => {
     if (friendsData.length > 0) {
       const { data: users, error } = await supabase
@@ -56,7 +57,7 @@ function Friends() {
 
   useEffect(() => {
     getFriends();
-    setactiveChat(friendsData[0])
+    dispatch(activeChat(friendsData[0]))
   }, [friendsData]);
 
   return (
@@ -66,7 +67,7 @@ function Friends() {
       </h2>
       <ul>
         {myFriends.length>=1 && myFriends?.map((friend:any, index:number) => (
-          <li key={index} className={`${acitveChat?.friend_id == friendsData[0]?.friend_id  ? "bg-violet-500 text-white rounded-md" : "text-gray-500"} "flex items-center p-2 rounded-md cursor-pointer"`}>
+          <li key={index} className={`${acitveChat?.friend_id == friendsData[0]?.friend_id  ? "bg-violet-500 text-white rounded-md" : "text-gray-500"} "flex items-center p-2 rounded-md cursor-pointer"`} onClick={()=>dispatch(activeChat(friend))}>
             <div className='flex flex-row items-center gap-5 p-3'>
             <img
               src={friend?.profile_url} 

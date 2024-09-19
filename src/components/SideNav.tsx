@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { supabase } from "../../supabase.js";
 import UserSeachResults from "../shared/UserSeachResults";
 import Friends from "./Friends.js";
@@ -8,10 +8,12 @@ type userSearchResults = {
   last_name: string | undefined;
   profile_url: string | undefined;
 };
+import {debounce} from "../utils/constants"
 export default function SideNav() {
   const [searchVal, setsearchVal] = useState<string>("");
   const [searchRes, setsearchRes] = useState<userSearchResults[]>([]);
   const searchByUsername = async (username: string) => {
+    console.log('username', username)
     try {
       let { data: users, error } = await supabase
         .from("users")
@@ -25,11 +27,13 @@ export default function SideNav() {
       console.log("ERR", error);
     }
   };
+  const debouncedSearch = useCallback(debounce((val: string) => {
+    searchByUsername(val);
+  }, 800), []);
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setsearchVal(e.target.value);
-    if (searchVal.length >= 2) {
-      searchByUsername(e.target.value);
-    }
+    debouncedSearch(e.target.value);
+    
   };
   return (
     <>
