@@ -1,16 +1,18 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '../../supabase.js';
+import { useSelector } from 'react-redux';
 
 const MyProfile = () => {
     const [profileData, setProfileData] = useState([]);
-
+    const {userData} = useSelector(state=>state.user);
+    console.log(userData?.user?.id)
     useEffect(() => {
         async function getProfileData() {
             try {
                 let { data: users, error } = await supabase
                     .from("users")
                     .select('*')
-                    .eq("id", "aabd8b96-518b-4357-ae47-03f3749c138c");
+                    .eq("id", userData?.user?.id);
                 console.log("users", users);
                 if (!error) {
                     setProfileData(users);

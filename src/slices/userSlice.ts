@@ -1,12 +1,14 @@
 import { createSlice } from '@reduxjs/toolkit'
 export interface userState {
     userData: [],
-    loading: boolean
+    loading: boolean,
+    activeChat: []
   }
 
 const initialState:userState={
     userData: [],
-    loading: false
+    loading: false,
+    activeChat: []
 }
 const userSlice = createSlice({
     name: "userReducer",
@@ -32,10 +34,13 @@ const userSlice = createSlice({
             localStorage.removeItem("userInfo");
             state.userData = []
             state.loading = false;
+        },
+        activeChat: (state, action)=>{
+            state.activeChat = action.payload
         }
     }
 
 })
 
-export const {addToLocal, getData, setLoading, signOut} = userSlice.actions
+export const {addToLocal, getData, setLoading, signOut, activeChat} = userSlice.actions
 export default userSlice.reducer;

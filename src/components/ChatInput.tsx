@@ -17,6 +17,10 @@ const ChatInput = () => {
   const uploadRef = useRef();
   const dispatch = useDispatch();
   async function addMessage(imageURl:string) {
+    let finalURL;
+    if(imageURl){
+      finalURL = `${imageURl}-${Date.now() * 1000}`;
+    }
       try {
         setisLoading(true);
         const { data, error } = await supabase
@@ -26,8 +30,8 @@ const ChatInput = () => {
           created_at: new Date(),
           message: message ? message : null,
           type: "global",
-          document: imageURl ? imageURl : null,
-          sender_id: userData?.user.id,
+          document: finalURL ? finalURL : null,
+          sender_id: userData?.user?.id,
           is_deleted: false
         },
       ])
@@ -93,7 +97,7 @@ const ChatInput = () => {
   const handleImageUpload = (e:ChangeEvent<HTMLInputElement>)=>{
     try{
     setisLoading(true)
-    const file = e.target.files[0];
+    const file = e?.target?.files[0];
     setImage(file);
     const objectUrl = URL.createObjectURL(file);
     setimagePreview(objectUrl);
@@ -122,7 +126,7 @@ const ChatInput = () => {
       </button>
 
       {/* upload  images */}
-      <div className='flex justify-center items-center w-[40px] h-[40px] mx-3 bg-gray-300 rounded-md hover:cursor-pointer' onClick={()=>uploadRef.current.click()}  animate={{ x: 100 }} initial={false} >
+      <div className='flex justify-center items-center w-[40px] h-[40px] mx-3 bg-gray-300 rounded-md hover:cursor-pointer' onClick={()=>uploadRef?.current?.click()}  animate={{ x: 100 }} initial={false} >
       <button className='transition-all rounded-md relative'>
       <HiOutlineUpload />
       </button>

@@ -3,17 +3,19 @@ import { useEffect, useState } from "react";
 import { supabase } from "../../supabase.js";
 import { UserRoundPlus, Check } from "lucide-react";
 import { format } from "date-fns";
+import { useSelector } from "react-redux";
 export default function ProfilePage({}: Props) {
   const [isLoading, setisLoading] = useState<boolean>(false);
   const [userProfile, setuserProfile] = useState([]);
   const [userDetails, setuserDetails] = useState("");
+  const {userData} = useSelector(state=>state.user);
   useEffect(() => {
     (async function getUserProfile() {
       try {
         let { data: users, error } = await supabase
           .from("users")
           .select("*")
-          .eq("id", "aabd8b96-518b-4357-ae47-03f3749c138c");
+          .eq("id", userData?.user?.id);
         if (!error) {
           setuserProfile(users);
         }
