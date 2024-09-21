@@ -31,7 +31,7 @@ function AfterAuthRoutes() {
   useRoutes([
     {path: "/", element:<Home />},
     {path: "/chat", element: <Chat />},
-    {path: "/profile/:id", element: <ProfilePage />},
+    {path: "/profile/:user_name", element: <ProfilePage />},
     {path: "/profile/me", element: <MyPrfofile />},
     {path: "*", element: <Navigate to={'/'} replace/>},
   ])

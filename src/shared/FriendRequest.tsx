@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { supabase } from "../../supabase.js";
 import { useSelector } from "react-redux";
 
@@ -11,14 +11,19 @@ export default function FriendRequest({}: Props) {
     async function getFriendRequests() {
       let { data: friends, error } = await supabase
         .from("friends")
-        .select("*")
-        .eq("user_id", "aabd8b96-518b-4357-ae47-03f3749c138c")
-        .eq("is_accepted", false)
+        .select('*, users:friend_id (id, user_name, profile_url)')
+        .eq("user_id", userData?.user?.id) // This fetches friend requests sent to the current user
         .eq("is_accepted", false);
-      setactiveRequests(friends);
+  
+      if (error) {
+        console.error("Error fetching friend requests:", error);
+      } else {
+        setactiveRequests(friends);
+      }
     }
+  
     getFriendRequests();
-  }, []);
+  }, [userData]);
 
   const acceptRequest = async (friendId:string, userId:string) => {
     try {
@@ -52,17 +57,24 @@ export default function FriendRequest({}: Props) {
             <div className="p-6 space-y-4" key={item?.user_id}>
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-4">
-                  <img
-                    src="https://via.placeholder.com/40"
+                 {item?.users?.profile_url?  <img
+                    src={item?.users?.profile_url}
                     alt="Profile Picture"
                     className="w-10 h-10 rounded-full"
                   />
-                  <span className="text-gray-800 font-medium">user Name</span>
+                :
+                <img
+                src={"/emptyUser.svg"}
+                alt="Profile Picture"
+                className="w-10 h-10 rounded-full"
+              />
+                }
+                  <span className="text-gray-800 font-medium">{item?.users?.user_name}</span>
                 </div>
                 <div className="flex space-x-2">
                   <button
                     className="bg-green-500 text-white px-4 py-1 rounded-full hover:bg-green-600 focus:outline-none"
-                    onClick={() => acceptRequest(item?.friend_id, item?.user_id)}
+                    onClick={() => acceptRequest(item?.users?.id, item?.user_id)}
                   >
                     Accept
                   </button>

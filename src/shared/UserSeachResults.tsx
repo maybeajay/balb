@@ -34,7 +34,7 @@ export default function UserSeachResults({users}: Props) {
             </p>
             </Link>
             <p className="text-sm text-gray-500 truncate dark:text-gray-400">
-              email@windster.com
+             {item?.email}
             </p>
           </div>
         </div>
