@@ -47,7 +47,7 @@ function IndividualChat() {
       {/* section for search users */}
      {/* if search resuklts is greater than 0 then only show results component*/}
      {/* Pending Friend Requests */}
-     <FriendRequest />
+     {/* <FriendRequest /> */}
 
      {/* <Notifications /> */}
      {/* <Friends /> */}

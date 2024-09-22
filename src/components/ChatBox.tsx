@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { supabase } from "../../supabase.js";
 import { format } from "date-fns";
 import EmptyMessage from "./EmptyMessage.js";
+import { useSelector } from "react-redux";
 type Props = {
   userId: string;
 };
@@ -9,7 +10,8 @@ type Props = {
 function ChatBox({ userId }: Props) {
   const [messages, setMessage] = useState([]);
   const [isLoading, setisLoading] = useState(false);
-  const [newMsg, setnewMsg] = useState<string>("")
+  const [newMsg, setnewMsg] = useState<string>("");
+  const {userData} = useSelector(state=>state.user);
   const subscribeToRealtime = async () => {
     try {
       setisLoading(true);
@@ -26,9 +28,7 @@ function ChatBox({ userId }: Props) {
                   message.id === payload.new.id
               );
               if (payload.new.is_deleted) {
-                // If the new payload indicates the message is deleted
                 if (index !== -1) {
-                  // Update the message to show it is deleted
                   const updatedMessages = [...prevMessages];
                   updatedMessages[index] = {
                     ...payload.new,
@@ -38,18 +38,16 @@ function ChatBox({ userId }: Props) {
                 }
               } else {
                 if (payload.old?.id) {
-                  // Update the message if it exists
                   if (index !== -1) {
                     const updatedMessages = [...prevMessages];
                     updatedMessages[index] = payload.new;
                     return updatedMessages;
                   }
                 } else {
-                  // Add the new message to the messages array
                   return [...prevMessages, payload.new];
                 }
               }
-              return prevMessages; // Return previous state if no changes are made
+              return prevMessages;
             });
           }
         )
@@ -83,8 +81,8 @@ function ChatBox({ userId }: Props) {
       {
         created_at: new Date(),
         content: newMsg,
-        sender_id: 'c447596a-8a94-428d-a9d3-cf1794551453',
-        receiver_id: "aabd8b96-518b-4357-ae47-03f3749c138c",
+        sender_id: userData?.user?.id,
+        receiver_id: "5bfeb0e5-9f8a-41f2-a3a1-57e0018e8206",
         is_deleted: false,
         read: false
       },
@@ -111,7 +109,7 @@ function ChatBox({ userId }: Props) {
           <div className="flex flex-col space-y-4">
             {/* Sender Message */}
             {
-                (messages.length >=1 && !isLoading) ? messages.map((msg:any, id)=> <div  className={`${msg?.sender_id === "aae35fae-8252-4b53-98bc-0267c482990c" ? "self-end bg-blue-500 text-white" : "self-start bg-gray-400 text-white"} max-w-xs p-3  rounded-l-lg rounded-br-lg shadow-md`} key={id}>
+                (messages.length >=1 && !isLoading) ? messages.map((msg:any, id)=> <div  className={`${msg?.sender_id === userData?.user?.id ? "self-end bg-blue-500 text-white" : "self-start bg-gray-400 text-white"} max-w-xs p-3  rounded-l-lg rounded-br-lg shadow-md`} key={id}>
                 <p>{msg.content}</p>
                 <span className="text-xs text-gray-200">{msg?.created_at && format(msg?.created_at, "MM/dd/yyyy")}</span>
               </div> )  : <EmptyMessage />
