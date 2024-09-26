@@ -41,7 +41,7 @@ function IndividualChat() {
     <main className='w-full'>
       <div className="flex">
       <SideNav />
-     {activeChat &&  <ChatBox />} 
+     {/* {activeChat &&  <ChatBox />}  */}
      </div>
 
       {/* section for search users */}

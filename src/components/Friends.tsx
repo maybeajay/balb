@@ -3,6 +3,7 @@ import { supabase } from '../../supabase.js';
 import { catchErrors } from '../slices/errorsSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { activeChat } from '../slices/userSlice.js';
+import { useNavigate } from 'react-router-dom';
 interface User {
   id: string;
   username: string;
@@ -20,15 +21,14 @@ function Friends() {
   const [friendsData, setFriendsData] = useState<Friend>([]);
   const [myFriends, setMyFriends] = useState<User>([]);
   const dispatch = useDispatch();
-  const {userData} = useSelector(state=>state.user);
-  console.log("userData", userData)
+  const {userData, activeChatID} = useSelector(state=>state.user);
+  const navigate = useNavigate();
   const getFriends = async () => {
     if (friendsData.length > 0) {
       const { data: users, error } = await supabase
         .from('users')
         .select()
         .eq('id', friendsData[0]?.friend_id);
-        console.log(friendsData)
       if (error) {
         catchErrors(error.message);
       } else {
@@ -58,12 +58,16 @@ function Friends() {
   }, []);
 
 
-  console.log("MYFREINDS", myFriends)
-
   useEffect(() => {
     getFriends();
-    dispatch(activeChat(friendsData[0]))
+    dispatch(activeChat(friendsData[0]?.friend_id))
   }, [friendsData]);
+
+  // for selecting custom friend and highlight the user
+  const handleFriendSelect = (selectedFriend)=>{
+    dispatch(activeChat(selectedFriend?.id));
+    navigate(`/chat/${selectedFriend?.id}`)
+  }
 
   return (
     <div>
@@ -72,7 +76,16 @@ function Friends() {
       </h2>
       <ul>
         {myFriends.length>=1 && myFriends?.map((friend:any, index:number) => (
-          <li key={index} className={`? "bg-violet-500 text-white rounded-md" : "text-gray-500"} "flex items-center p-2 rounded-md cursor-pointer"`} onClick={()=>dispatch(activeChat(friend))}>
+           <li
+           key={index}
+           className={`flex items-center p-4 rounded-md cursor-pointer ${
+             friend.id === activeChatID
+               ? 'bg-[#8b5cf6] text-white'
+               : 'bg-white text-black'
+           }`}
+           style={{ height: '60px' }}
+           onClick={() => handleFriendSelect(friend)}
+         >
             <div className='flex flex-row gap-5 p-3'>
             <img
               src={friend?.profile_url} 
@@ -80,7 +93,7 @@ function Friends() {
               alt="User"
               loading='lazy'
             />
-                <h3 className="text-md font-semibold text-black">{friend?.user_name}</h3>
+                <h3 className="text-md font-semibold">{friend?.user_name}</h3>
               </div>
           </li>
         ))}

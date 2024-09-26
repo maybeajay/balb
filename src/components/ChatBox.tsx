@@ -3,15 +3,17 @@ import { supabase } from "../../supabase.js";
 import { format } from "date-fns";
 import EmptyMessage from "./EmptyMessage.js";
 import { useSelector } from "react-redux";
-type Props = {
-  userId: string;
-};
-
-function ChatBox({ userId }: Props) {
+import { useNavigate, useParams } from "react-router-dom";
+import SideNav from "./SideNav.js";
+function ChatBox() {
   const [messages, setMessage] = useState([]);
   const [isLoading, setisLoading] = useState(false);
   const [newMsg, setnewMsg] = useState<string>("");
   const {userData} = useSelector(state=>state.user);
+  const params = useParams();
+  const {id} = params;
+  const navigate = useNavigate();
+  // for realtime messages and updates
   const subscribeToRealtime = async () => {
     try {
       setisLoading(true);
@@ -72,6 +74,13 @@ function ChatBox({ userId }: Props) {
     subscribeToRealtime();
   }, []);
 
+  // if no id found re-direct to home page
+  useEffect(()=>{
+    if(!id || id == undefined){
+      navigate("/");
+    }
+  }, [id])
+
   const sendMessage = async ()=>{
     try {
       setisLoading(true);
@@ -82,7 +91,7 @@ function ChatBox({ userId }: Props) {
         created_at: new Date(),
         content: newMsg,
         sender_id: userData?.user?.id,
-        receiver_id: "5bfeb0e5-9f8a-41f2-a3a1-57e0018e8206",
+        receiver_id: id,
         is_deleted: false,
         read: false
       },
@@ -105,6 +114,7 @@ function ChatBox({ userId }: Props) {
     <div className="w-full">
       <div className="flex flex-col h-[50vh] mt-10 border-gray-50">
         {/* Chat Messages */}
+        {/* <SideNav /> */}
         <div className="flex-1 p-4 overflow-y-auto">
           <div className="flex flex-col space-y-4">
             {/* Sender Message */}

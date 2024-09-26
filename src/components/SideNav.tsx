@@ -13,7 +13,6 @@ export default function SideNav() {
   const [searchVal, setsearchVal] = useState<string>("");
   const [searchRes, setsearchRes] = useState<userSearchResults[]>([]);
   const searchByUsername = async (username: string) => {
-    console.log('username', username)
     try {
       let { data: users, error } = await supabase
         .from("users")
