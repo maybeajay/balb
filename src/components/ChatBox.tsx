@@ -5,11 +5,11 @@ import EmptyMessage from "./EmptyMessage.js";
 import { useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import SideNav from "./SideNav.js";
-function ChatBox() {
+function ChatBox({selectedId}) {
   const [messages, setMessage] = useState([]);
   const [isLoading, setisLoading] = useState(false);
   const [newMsg, setnewMsg] = useState<string>("");
-  const {userData} = useSelector(state=>state.user);
+  const {userData} = useSelector(state=>state?.user);
   const params = useParams();
   const {id} = params;
   const navigate = useNavigate();
@@ -65,6 +65,7 @@ function ChatBox() {
       let { data: individual_chats, error } = await supabase
         .from("individual_chats")
         .select("*")
+        .eq("receiver_id", selectedId)
         .order('created_at', { ascending: true })
 
       if (individual_chats) {
@@ -72,7 +73,7 @@ function ChatBox() {
       }
     })();
     subscribeToRealtime();
-  }, []);
+  }, [selectedId]);
 
   // if no id found re-direct to home page
   useEffect(()=>{
@@ -111,37 +112,89 @@ function ChatBox() {
   }
 
   return (
-    <div className="w-full">
-      <div className="flex flex-col h-[50vh] mt-10 border-gray-50">
-        {/* Chat Messages */}
-        {/* <SideNav /> */}
-        <div className="flex-1 p-4 overflow-y-auto">
-          <div className="flex flex-col space-y-4">
-            {/* Sender Message */}
-            {
-                (messages.length >=1 && !isLoading) ? messages.map((msg:any, id)=> <div  className={`${msg?.sender_id === userData?.user?.id ? "self-end bg-blue-500 text-white" : "self-start bg-gray-400 text-white"} max-w-xs p-3  rounded-l-lg rounded-br-lg shadow-md`} key={id}>
-                <p>{msg.content}</p>
-                <span className="text-xs text-gray-200">{msg?.created_at && format(msg?.created_at, "MM/dd/yyyy")}</span>
-              </div> )  : <EmptyMessage />
-            }
-          </div>
-        </div>
+    // <div className="w-full flex flex-row">
+    //     <SideNav />
+    //   <div className="flex flex-col h-[50vh] mt-10 border-gray-50">
+    //     {/* Chat Messages */}
+    //     <div className="flex-1 p-4 overflow-y-auto">
+    //       <div className="flex flex-col space-y-4">
+    //         {/* Sender Message */}
+    //         {
+    //             (messages.length >=1 && !isLoading) ? messages.map((msg:any, id)=> <div  className={`${msg?.sender_id === userData?.user?.id ? "self-end bg-blue-500 text-white" : "self-start bg-gray-400 text-white"} max-w-xs p-3  rounded-l-lg rounded-br-lg shadow-md`} key={id}>
+    //             <p>{msg.content}</p>
+    //             <span className="text-xs text-gray-200">{msg?.created_at && format(msg?.created_at, "MM/dd/yyyy")}</span>
+    //           </div> )  : <EmptyMessage />
+    //         }
+    //       </div>
+    //     </div>
 
-        {/* Chat Input */}
-        <div className="flex items-center p-4 bg-white border-t border-gray-300">
-          <input
-            type="text"
-            placeholder="Type a message..."
-            className="flex-1 px-4 py-2 mr-2 border rounded-full border-gray-300 focus:outline-none focus:border-blue-500"
-            onChange={(e)=>setnewMsg(e.target.value)}
-            value={newMsg}
-          />
-          <button className="px-4 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700" disabled={newMsg.trim().length <1} onClick={sendMessage} >
-            Send
-          </button>
-        </div>
+    //     {/* Chat Input */}
+    //     <div className="flex items-center p-4 bg-white border-t border-gray-300">
+    //       <input
+    //         type="text"
+    //         placeholder="Type a message..."
+    //         className="flex-1 px-4 py-2 mr-2 border rounded-full border-gray-300 focus:outline-none focus:border-blue-500"
+    //         onChange={(e)=>setnewMsg(e.target.value)}
+    //         value={newMsg}
+    //       />
+    //       <button className="px-4 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700" disabled={newMsg.trim().length <1} onClick={sendMessage} >
+    //         Send
+    //       </button>
+    //     </div>
+    //   </div>
+    // </div>
+    <>
+    <div className="w-full flex flex-row">
+  {/* SideNav with 20% width */}
+
+  {/* ChatBox with 80% width */}
+  <div className="w-full flex flex-col h-[50vh] mt-10 border-gray-50">
+    {/* Chat Messages */}
+    <div className="flex-1 p-4 overflow-y-auto">
+      <div className="flex flex-col space-y-4">
+        {/* Sender Message */}
+        {messages.length >= 1 && !isLoading ? (
+          messages.map((msg: any, id) => (
+            <div
+              className={`${
+                msg?.sender_id === userData?.user?.id
+                  ? "self-end bg-blue-500 text-white"
+                  : "self-start bg-gray-400 text-white"
+              } max-w-xs p-3 rounded-l-lg rounded-br-lg shadow-md`}
+              key={id}
+            >
+              <p>{msg.content}</p>
+              <span className="text-xs text-gray-200">
+                {msg?.created_at && format(msg?.created_at, "MM/dd/yyyy")}
+              </span>
+            </div>
+          ))
+        ) : (
+          <EmptyMessage />
+        )}
       </div>
     </div>
+
+    {/* Chat Input */}
+    <div className="flex items-center p-4 bg-white border-t border-gray-300">
+      <input
+        type="text"
+        placeholder="Type a message..."
+        className="flex-1 px-4 py-2 mr-2 border rounded-full border-gray-300 focus:outline-none focus:border-blue-500"
+        onChange={(e) => setnewMsg(e.target.value)}
+        value={newMsg}
+      />
+      <button
+        className="px-4 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700"
+        disabled={newMsg.trim().length < 1}
+        onClick={sendMessage}
+      >
+        Send
+      </button>
+    </div>
+  </div>
+</div>
+    </>
   );
 }
 

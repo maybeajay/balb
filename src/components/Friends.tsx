@@ -66,7 +66,6 @@ function Friends() {
   // for selecting custom friend and highlight the user
   const handleFriendSelect = (selectedFriend)=>{
     dispatch(activeChat(selectedFriend?.id));
-    navigate(`/chat/${selectedFriend?.id}`)
   }
 
   return (

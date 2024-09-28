@@ -15,6 +15,7 @@ import HomeScreen from "./components/HomeScreen";
 import ProfilePage from "./components/ProfilePage";
 import MyPrfofile from "./components/Profile";
 import ChatBox from "./components/ChatBox";
+import SideNav from "./components/SideNav";
 function UnAuthRoutes() {
   return(
   useRoutes([
@@ -34,7 +35,7 @@ function AfterAuthRoutes() {
     {path: "/chat", element: <Chat />},
     {path: "/profile/:user_name", element: <ProfilePage />},
     {path: "/profile/me", element: <MyPrfofile />},
-    {path: "/chat/:id", element: <ChatBox />},
+    // {path: "/chat/:id", element: <ChatBox />},
     {path: "*", element: <Navigate to={'/'} replace/>},
   ])
   )
@@ -56,8 +57,8 @@ function FinalRoutes(){
   else{
     return isUserDataEmpty ? <UnAuthRoutes /> : <>
     <Header />
-    {/* <SideNav /> */}
       <AfterAuthRoutes />
+    {/* <SideNav /> */}
       </>
 }
 }

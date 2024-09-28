@@ -9,6 +9,7 @@ type userSearchResults = {
   profile_url: string | undefined;
 };
 import {debounce} from "../utils/constants"
+import ChatBox from "./ChatBox.js";
 export default function SideNav() {
   const [searchVal, setsearchVal] = useState<string>("");
   const [searchRes, setsearchRes] = useState<userSearchResults[]>([]);
@@ -87,6 +88,7 @@ export default function SideNav() {
 
         {/* All Chats */}
         <Friends />
+        {/* <ChatBox /> */}
       </div>
     </>
   );
