@@ -4,7 +4,6 @@ import Login from "./components/Login";
 import Signup from "./components/Signup";
 import Home from "./components/Home";
 import VerifyEmail from "./components/VerifyEmail";
-import Chat from "./components/Chat";
 import { store } from "./store";
 import { Provider, useDispatch, useSelector } from "react-redux";
 import { getData, setLoading } from "./slices/userSlice";
@@ -14,8 +13,7 @@ import { Toaster } from "react-hot-toast";
 import HomeScreen from "./components/HomeScreen";
 import ProfilePage from "./components/ProfilePage";
 import MyPrfofile from "./components/Profile";
-import ChatBox from "./components/ChatBox";
-import SideNav from "./components/SideNav";
+import Settings from "./components/Settings";
 function UnAuthRoutes() {
   return(
   useRoutes([
@@ -32,9 +30,9 @@ function AfterAuthRoutes() {
   return (
   useRoutes([
     {path: "/", element:<Home />},
-    {path: "/chat", element: <Chat />},
     {path: "/profile/:user_name", element: <ProfilePage />},
     {path: "/profile/me", element: <MyPrfofile />},
+    {path: "/settings", element: <Settings />},
     // {path: "/chat/:id", element: <ChatBox />},
     {path: "*", element: <Navigate to={'/'} replace/>},
   ])

@@ -1,4 +1,3 @@
-import  { useEffect } from 'react'
 import { LuUser } from 'react-icons/lu'
 import { Link } from 'react-router-dom'
 
