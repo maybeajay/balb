@@ -1,41 +1,18 @@
-import { IoPowerSharp } from "react-icons/io5";
-import { supabase } from "../../supabase.js";
-import { Link, useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import { setLoading, signOut } from "../slices/userSlice.js";
+import { Link } from "react-router-dom";
+import AvatarButton from "../shared/AvatarButton.js";
 const Header = () => {
-  const navigation = useNavigate();
-  const dispatch = useDispatch();
-  const handleLogout = async () => {
-    try {
-      const { error } = await supabase.auth.signOut();
-      if (error == null) {
-        dispatch(setLoading(true));
-        dispatch(signOut());
-        dispatch(setLoading(false));
-        navigation("/");
-      }
-    } catch (error) {
-      console.log("actual error ", error);
-    }
-  };
+  
   return (
-    <header className="header sticky top-0 bg-white shadow-md flex items-center justify-between px-8 py-02">
-      <div>
-        <h1>Balb</h1>
-      </div>
+    <div className="header  top-0 bg-white flex items-center justify-between px-8 py-2">
+      <Link to={"/"} className="flex flex-row items-center">
+        <img src={'/logo.png'} alt="Logo" width={80}/>
+      </Link>
+
       {/* logout button */}
       <div className="w-3/12 flex justify-end">
-        <button
-          className="flex flex-col justify-center items-center"
-          onClick={() => handleLogout()}
-        >
-          <IoPowerSharp size={25} className="hover:text-red-500" />
-          <p className="text-sm">Sign Out</p>
-        </button>
-        <Link to={"/profile/me"}>My Profile</Link>
+        <AvatarButton src={"https://images.unsplash.com/photo-1727272287872-d698f16adc24?q=80&w=1936&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"}/>
       </div>
-    </header>
+    </div>
   );
 };
 
