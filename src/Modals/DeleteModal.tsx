@@ -4,7 +4,7 @@ import Loader from "../shared/Loader.js";
 type Props = {
   setshowModal: Dispatch<SetStateAction<boolean>>;
   uuid: number | null;
-  setMessages: Dispatch<SetStateAction<string>>
+  setMessages: any
 };
 
 const DeleteModal = ({ setshowModal, uuid }: Props) => {

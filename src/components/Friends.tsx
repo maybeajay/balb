@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { supabase } from '../../supabase.js';
 import { catchErrors } from '../slices/errorsSlice';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { activeChat } from '../slices/userSlice.js';
-import { useNavigate } from 'react-router-dom';
+import { useAppSelector } from '../types.js';
 interface User {
   id: string;
   username: string;
@@ -18,17 +18,17 @@ interface Friend {
   is_pending: boolean;
 }
 function Friends() {
-  const [friendsData, setFriendsData] = useState<Friend>([]);
-  const [myFriends, setMyFriends] = useState<User>([]);
+  const [friendsData, setFriendsData] = useState<Friend[]>([]);
+  const [myFriends, setMyFriends] = useState<User[]>([]);
   const dispatch = useDispatch();
-  const {userData, activeChatID} = useSelector(state=>state.user);
-  const navigate = useNavigate();
+  const {userData, activeChatID} = useAppSelector(state=>state.user);
   const getFriends = async () => {
     if (friendsData.length > 0) {
+      const friendIds = friendsData.map(friend => friend.friend_id);
       const { data: users, error } = await supabase
-        .from('users')
-        .select()
-        .eq('id', friendsData[0]?.friend_id);
+      .from('users')
+      .select()
+      .in('id', friendIds);
       if (error) {
         catchErrors(error.message);
       } else {
@@ -52,7 +52,7 @@ function Friends() {
           setFriendsData(friends);
         }
       } catch (error) {
-        catchErrors(error.message);
+        catchErrors(error?.message);
       }
     })();
   }, []);
@@ -68,6 +68,7 @@ function Friends() {
     dispatch(activeChat(selectedFriend?.id));
   }
 
+  console.log("friendsData", myFriends, "userData?.user.id", userData?.user.id)
   return (
     <div>
       <h2 className="text-sm font-semibold text-gray-600 mb-2">

@@ -1,15 +1,12 @@
-import React, { useState } from 'react'
 import SideNav from './SideNav'
-import { supabase } from "../supabase.js";
-import UserSeachResults from '../shared/UserSeachResults.js';
 import FriendRequest from '../shared/FriendRequest.js';
 import Notifications from '../shared/Notifications.js';
-import Friends from './Friends.js';
 import ChatBox from './ChatBox.js';
 import { useSelector } from 'react-redux';
+import { useState } from 'react';
 function IndividualChat() {
   const {activeChatID} = useSelector(state=>state?.user);
-
+  const [isFriendReqVisible, setisFriendReqVisible] = useState<boolean>(true);
   return (
     <>
       <div className="flex">
@@ -17,6 +14,9 @@ function IndividualChat() {
         <div className="basis-1/5">
           <SideNav />
         </div>
+        {
+          isFriendReqVisible && <FriendRequest setVisible={setisFriendReqVisible}/>
+        }
   
         {/* Main Content (ChatBox) with 80% width */}
         <main className="flex-grow">
