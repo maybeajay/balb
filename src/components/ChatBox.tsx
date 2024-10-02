@@ -2,17 +2,12 @@ import { useEffect, useState } from "react";
 import { supabase } from "../../supabase.js";
 import { format } from "date-fns";
 import EmptyMessage from "./EmptyMessage.js";
-import { useNavigate, useParams } from "react-router-dom";
 import { useAppSelector } from "../types.js";
 function ChatBox({selectedId}) {
   const [messages, setMessage] = useState([]);
   const [isLoading, setisLoading] = useState(false);
   const [newMsg, setnewMsg] = useState<string>("");
   const {userData} = useAppSelector(state=>state?.user);
-  const params = useParams();
-  const {id} = params;
-  const navigate = useNavigate();
-  
   // for realtime messages and updates
   const subscribeToRealtime = async () => {
     try {
@@ -75,13 +70,6 @@ function ChatBox({selectedId}) {
     subscribeToRealtime();
   }, [selectedId]);
 
-  // if no id found re-direct to home page
-  useEffect(()=>{
-    if(!id || id == undefined){
-      navigate("/");
-    }
-  }, [id])
-
   const sendMessage = async ()=>{
     try {
       setisLoading(true);
@@ -92,7 +80,7 @@ function ChatBox({selectedId}) {
         created_at: new Date(),
         content: newMsg,
         sender_id: userData?.user?.id,
-        receiver_id: id,
+        receiver_id: selectedId,
         is_deleted: false,
         read: false
       },

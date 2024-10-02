@@ -27,7 +27,7 @@ type Data = {
 };
 
 function GlobalChat() {
-  const [messages, setMessages] = useState<Data>([]);
+  const [messages, setMessages] = useState<Data[]>([]);
   const [errors, setErrors] = useState(null);
   const [showModal, setshowModal] = useState<boolean>(false);
   const [uniqueId, setuniqueId] = useState<number | null>(null);
@@ -165,9 +165,8 @@ function GlobalChat() {
   }
   return (
     <>
-    {isLoading ? <div className="container">
-      <Shimmer />
-    </div> :
+    {!isLoading ? 
+      <Shimmer /> :
     <div className="container mx-auto mt-3 flex items-center p-10">
       <div className="w-full mx-auto bg-white rounded-lg shadow-lg overflow-hidden">
         {/* Messages */}
@@ -275,7 +274,7 @@ function GlobalChat() {
             setshowModal={setshowModal}
             uuid={uniqueId}
             setMessages={setMessages}
-            message={messages}
+            // message={messages ? true : false}
           />
           </motion.div>
         )}
@@ -303,23 +302,26 @@ function GlobalChat() {
 export const Shimmer = ()=>{
   return(
     <ContentLoader 
-    speed={2}
-    width={1200}
-    height={600}
-    viewBox="0 0 700 300"
+    speed={3}
+    width={800}
+    height={460}
+    viewBox="0 0 800 460"
     backgroundColor="#f5f5f5"
     foregroundColor="#dbdbdb"
   >
+    {/* Outer frame rectangle */}
     <rect x="12" y="35" rx="0" ry="0" width="6" height="246" /> 
     <rect x="14" y="34" rx="0" ry="0" width="408" height="6" /> 
     <rect x="416" y="34" rx="0" ry="0" width="6" height="246" /> 
     <rect x="12" y="276" rx="0" ry="0" width="408" height="6" /> 
-    <rect x="150" y="53" rx="6" ry="6" width="127" height="15" /> 
-    <rect x="37" y="77" rx="7" ry="7" width="361" height="139" /> 
-    <rect x="58" y="225" rx="0" ry="0" width="316" height="8" /> 
-    <rect x="86" y="238" rx="0" ry="0" width="267" height="8" /> 
-    <rect x="58" y="252" rx="0" ry="0" width="316" height="8" />
+
+    <rect x="40" y="60" rx="10" ry="10" width="140" height="30" /> 
+    <rect x="40" y="120" rx="10" ry="10" width="140" height="30" /> 
+
+    <rect x="220" y="180" rx="10" ry="10" width="180" height="30" /> 
+    <rect x="220" y="230" rx="10" ry="10" width="150" height="30" /> 
   </ContentLoader>
+
   )
 }
 export default GlobalChat;

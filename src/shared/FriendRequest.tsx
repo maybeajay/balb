@@ -1,10 +1,12 @@
-import { useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { supabase } from "../../supabase.js";
 import { useSelector } from "react-redux";
 
-type Props = {};
+type Props = {
+  setVisible: Dispatch<SetStateAction<boolean>>
+};
 
-export default function FriendRequest({}: Props) {
+export default function FriendRequest({setVisible}: Props) {
   const [activeRequests, setactiveRequests] = useState([]);
   const { userData } = useSelector((state: any) => state.user);
   useEffect(() => {
@@ -12,7 +14,7 @@ export default function FriendRequest({}: Props) {
       let { data: friends, error } = await supabase
         .from("friends")
         .select('*, users:friend_id (id, user_name, profile_url)')
-        .eq("user_id", userData?.user?.id) // This fetches friend requests sent to the current user
+        .eq("user_id", userData?.user?.id) 
         .eq("is_accepted", false);
   
       if (error) {
@@ -88,7 +90,7 @@ export default function FriendRequest({}: Props) {
           ))}
         {/* Modal Footer */}
         <div className="px-6 py-3 bg-gray-100 flex justify-end rounded-b-lg">
-          <button className="bg-purple-500 text-white px-4 py-2 rounded-full hover:bg-purple-600 focus:outline-none">
+          <button className="bg-purple-500 text-white px-4 py-2 rounded-full hover:bg-purple-600 focus:outline-none" onClick={()=>setVisible(false)}>
             Close
           </button>
         </div>
