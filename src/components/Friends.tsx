@@ -22,6 +22,7 @@ function Friends() {
   const [myFriends, setMyFriends] = useState<User[]>([]);
   const dispatch = useDispatch();
   const {userData, activeChatID} = useAppSelector(state=>state.user);
+   console.log(userData)
   const getFriends = async () => {
     if (friendsData.length > 0) {
       const friendIds = friendsData.map(friend => friend.friend_id);
@@ -43,7 +44,7 @@ function Friends() {
         const { data: friends, error } = await supabase
           .from('friends')
           .select()
-          .eq('user_id', userData?.user.id)
+          .eq('user_id', userData?.user?.id)
           .eq('is_accepted', true)
           .eq('is_pending', false);
         if (error) {
@@ -55,7 +56,7 @@ function Friends() {
         catchErrors(error?.message);
       }
     })();
-  }, []);
+  }, [userData?.user?.id]);
 
 
   useEffect(() => {
@@ -67,8 +68,6 @@ function Friends() {
   const handleFriendSelect = (selectedFriend)=>{
     dispatch(activeChat(selectedFriend?.id));
   }
-
-  console.log("friendsData", myFriends, "userData?.user.id", userData?.user.id)
   return (
     <div>
       <h2 className="text-sm font-semibold text-gray-600 mb-2">

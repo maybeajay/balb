@@ -14,6 +14,7 @@ import HomeScreen from "./components/HomeScreen";
 import ProfilePage from "./components/ProfilePage";
 import MyPrfofile from "./components/Profile";
 import Settings from "./components/Settings";
+import { useAppSelector } from "./types";
 function UnAuthRoutes() {
   return(
   useRoutes([
@@ -41,11 +42,12 @@ function AfterAuthRoutes() {
 
 function FinalRoutes(){
   const dispatch = useDispatch();
-  const { userData, loading } = useSelector((state: any) => state.user);
+  const { userData, loading } = useAppSelector((state: any) => state.user);
   const isUserDataEmpty = Array.isArray(userData) && userData.length === 0;
   useEffect(() => {
     dispatch(setLoading(true));
     dispatch(getData());
+    dispatch(setLoading(false));
   }, [dispatch]);
 
   if (loading) {
