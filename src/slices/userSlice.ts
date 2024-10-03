@@ -18,16 +18,15 @@ const userSlice = createSlice({
             state.loading = action.payload;
         },
         addToLocal: (state, action)=>{
-            localStorage.setItem("userInfo",action.payload);
-            state.userData = action.payload
+            localStorage.setItem("userInfo",action.payload)
+            console.log(action.payload)
+            state.userData = JSON.parse(action.payload)
         },
         getData: (state) => {
-            state.loading = true;
             const storedData = localStorage.getItem('userInfo');
             if (storedData) {
                 state.userData = JSON.parse(storedData);
             }
-            state.loading = false;
         },
         signOut: (state)=>{
             state.loading = true;

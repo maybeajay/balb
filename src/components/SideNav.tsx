@@ -9,7 +9,6 @@ type userSearchResults = {
   profile_url: string | undefined;
 };
 import {debounce} from "../utils/constants"
-import ChatBox from "./ChatBox.js";
 export default function SideNav() {
   const [searchVal, setsearchVal] = useState<string>("");
   const [searchRes, setsearchRes] = useState<userSearchResults[]>([]);
@@ -37,7 +36,7 @@ export default function SideNav() {
   };
   return (
     <>
-      <div className="w-80 bg-white shadow-lg rounded-md p-4 min-h-screen">
+      <div className="w-80 bg-white shadow-lg rounded-md p-4  h-[90%]">
         {/* Search Bar */}
         <div className="mb-4">
           <input

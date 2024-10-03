@@ -81,6 +81,7 @@ function Login() {
         });
         if (data.session) {
           dispatch(setLoading(true));
+          
           dispatch(addToLocal(JSON.stringify(data)))
           dispatch(setLoading(false));
           navigation("/");
