@@ -3,6 +3,7 @@ import { supabase } from "../../supabase.js";
 import { format } from "date-fns";
 import EmptyMessage from "./EmptyMessage.js";
 import { useAppSelector } from "../types.js";
+import { CheckCheck } from "lucide-react";
 function ChatBox({selectedId}) {
   const [messages, setMessage] = useState([]);
   const [isLoading, setisLoading] = useState(false);
@@ -70,6 +71,37 @@ function ChatBox({selectedId}) {
     subscribeToRealtime();
   }, [selectedId]);
 
+
+const updateMessageSeenStatus = async (messageId: string) => {
+  const { error } = await supabase
+    .from('individual_chats')
+    .update({ is_seen: true })
+    .eq('id', messageId);
+
+  if (error) {
+    console.error('Error updating message seen status:', error);
+  }
+};
+
+
+
+useEffect(() => {
+  const markMessagesAsSeen = async () => {
+    const unseenMessages = messages.filter(
+      (msg) => msg.receiver_id === userData?.user?.id && !msg.is_seen
+    );
+
+    for (const message of unseenMessages) {
+      await updateMessageSeenStatus(message.id);
+    }
+  };
+
+  if (messages.length > 0) {
+    markMessagesAsSeen();
+  }
+}, [messages, userData?.user?.id]);
+
+
   const sendMessage = async ()=>{
     try {
       setisLoading(true);
@@ -119,10 +151,16 @@ function ChatBox({selectedId}) {
               key={id}
             >
               <p>{msg.content}</p>
+              <div className="flex flex-row items-center justify-center gap-3">
               <span className="text-xs text-gray-200">
                 {msg?.created_at && format(msg?.created_at, "MM/dd/yyyy")}
               </span>
-            </div>
+
+              {
+                msg?.is_seen ? <CheckCheck size={20} color={"#cee0fd"}/> : <CheckCheck size={20} color={"#5995f7"}/>
+              }
+              </div>
+              </div>
           ))
         ) : (
           <EmptyMessage />
