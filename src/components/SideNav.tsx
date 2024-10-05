@@ -9,6 +9,7 @@ type userSearchResults = {
   profile_url: string | undefined;
 };
 import {debounce} from "../utils/constants"
+import ActiveUsers from "../shared/ActiveUsers.js";
 export default function SideNav() {
   const [searchVal, setsearchVal] = useState<string>("");
   const [searchRes, setsearchRes] = useState<userSearchResults[]>([]);
@@ -51,39 +52,7 @@ export default function SideNav() {
             {/* show search results here */}
         {searchRes.length >= 1 && <UserSeachResults users={searchRes} />}
         {/* Active Users */}
-        <div className="mb-4">
-          <h2 className="text-sm font-semibold text-gray-600 mb-2">
-            Active Users
-          </h2>
-          <div className="flex space-x-2">
-            <img
-              src="https://via.placeholder.com/32"
-              className="w-8 h-8 rounded-full"
-              alt="User 1"
-            />
-            <img
-              src="https://via.placeholder.com/32"
-              className="w-8 h-8 rounded-full"
-              alt="User 2"
-            />
-            <img
-              src="https://via.placeholder.com/32"
-              className="w-8 h-8 rounded-full"
-              alt="User 3"
-            />
-            <img
-              src="https://via.placeholder.com/32"
-              className="w-8 h-8 rounded-full"
-              alt="User 4"
-            />
-            <img
-              src="https://via.placeholder.com/32"
-              className="w-8 h-8 rounded-full"
-              alt="User 5"
-            />
-          </div>
-        </div>
-
+        <ActiveUsers />
 
         {/* All Chats */}
         <Friends />
