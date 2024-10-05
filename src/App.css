@@ -25,3 +25,8 @@
 .custom-rounded{
   border-bottom-left-radius: 20px;
 }
+
+.active-dot{
+  position: absolute;
+  left: "34px"
+}
