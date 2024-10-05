@@ -21,8 +21,8 @@ function ActiveUsers() {
     <div className="mb-4">
       <h2 className="text-sm font-semibold text-gray-600 mb-2">Active Users</h2>
       <div className="flex space-x-2">
-        {activeUsers &&
-          activeUsers.length > 0 &&
+        {(activeUsers &&
+          activeUsers.length > 0) ?
           activeUsers.map((user: any) => (
             <div className="flex flex-row items-center" key={user?.id}>
               <div className="flex flex-col justify-center">
@@ -35,7 +35,7 @@ function ActiveUsers() {
                 <p>{user?.user_name}</p>
               </div>
             </div>
-          ))}
+          )) : <p>No active users</p>}
       </div>
     </div>
   );
