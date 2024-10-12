@@ -5,20 +5,22 @@ import { useSelector } from 'react-redux';
 const MyProfile = () => {
     const [profileData, setProfileData] = useState([]);
     const {userData} = useSelector(state=>state.user);
-    console.log(userData?.user?.id)
+    const [isLoaded, setisLoaded] = useState(false);
     useEffect(() => {
         async function getProfileData() {
             try {
+                setisLoaded(true);
                 let { data: users, error } = await supabase
                     .from("users")
                     .select('*')
                     .eq("id", userData?.user?.id);
-                console.log("users", users);
                 if (!error) {
                     setProfileData(users);
                 }
             } catch (error) {
                 console.error(error);
+            }finally{
+                setisLoaded(false)
             }
         }
 
@@ -29,7 +31,7 @@ const MyProfile = () => {
         <div className="min-h-screen flex items-center justify-center">
             <div className="w-full max-w-6xl p-6">
                 <div className="flex flex-col md:flex-row md:items-start mb-6">
-                    <img className="w-32 h-32 rounded-full mb-4 md:mb-0 md:mr-8" src={profileData[0]?.profile_url} alt="Profile" />
+                    <img className="w-32 h-32 rounded-full mb-4 md:mb-0 md:mr-8" src={isLoaded ? "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png" :profileData[0]?.profile_url} alt="Profile" />
                     <div>
                         <p className="text-gray-500 mb-4">Image size limit should be 125kb max.</p>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

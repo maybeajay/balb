@@ -43,7 +43,7 @@ export default function SideNav() {
           <input
             type="text"
             placeholder="Search or start a new chat"
-            className="w-full p-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-green-500"
+            className="w-full p-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500"
             value={searchVal}
             onChange={(e) => handleChange(e)}
             />

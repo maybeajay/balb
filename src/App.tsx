@@ -5,7 +5,7 @@ import Signup from "./components/Signup";
 import Home from "./components/Home";
 import VerifyEmail from "./components/VerifyEmail";
 import { store } from "./store";
-import { Provider, useDispatch, useSelector } from "react-redux";
+import { Provider, useDispatch } from "react-redux";
 import { getData, setLoading } from "./slices/userSlice";
 import { useEffect } from "react";
 import Header from "./components/Header";
@@ -34,8 +34,7 @@ function AfterAuthRoutes() {
     {path: "/profile/:user_name", element: <ProfilePage />},
     {path: "/profile/me", element: <MyPrfofile />},
     {path: "/settings", element: <Settings />},
-    // {path: "/chat/:id", element: <ChatBox />},
-    {path: "*", element: <Navigate to={'/'} replace/>},
+    {path: "*", element: <Navigate to={'/'} />},
   ])
   )
 }
@@ -57,7 +56,7 @@ function FinalRoutes(){
   else{
     return isUserDataEmpty ? <UnAuthRoutes /> : <>
     <Header />
-      <AfterAuthRoutes />
+    <AfterAuthRoutes />
     {/* <SideNav /> */}
       </>
 }

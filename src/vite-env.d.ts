@@ -7,3 +7,9 @@ interface ImportMetaEnv {
   interface ImportMeta {
     readonly env: ImportMetaEnv
   }
+
+
+  export type userDetails = {
+    first_name: string,
+    last_name: string,
+  }
