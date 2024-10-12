@@ -30,3 +30,8 @@
   position: absolute;
   left: "34px"
 }
+
+
+.custom-checkbox:checked{
+  background-color: "#8b5cf6"
+}

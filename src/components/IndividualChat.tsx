@@ -7,7 +7,7 @@ import { useAppSelector } from '../types.js';
 import {supabase} from "../../supabase.js"
 function IndividualChat() {
   const {activeChatID, userData} = useAppSelector(state=>state?.user);
-  const [isFriendReqVisible, setisFriendReqVisible] = useState<boolean>(true);
+  const [isFriendReqVisible, setisFriendReqVisible] = useState<boolean>(false);
 
   // function to update the current active user 
   useEffect(() => {
