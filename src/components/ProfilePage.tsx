@@ -3,17 +3,19 @@ import { useEffect, useState } from "react";
 import { supabase } from "../../supabase.js";
 import { UserRoundPlus, Check } from "lucide-react";
 import { format } from "date-fns";
-import { useSelector } from "react-redux";
-import { useParams, useSearchParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
+import { useAppSelector } from "../types.js";
+import { UserProfile } from "../types.js";
 export default function ProfilePage({}: Props) {
-  const [isLoading, setisLoading] = useState<boolean>(false);
+  const [isLoading, setisLoading] = useState<boolean>(true);
   const [userProfile, setuserProfile] = useState([]);
   const [userDetails, setuserDetails] = useState("");
-  const {userData} = useSelector(state=>state.user);
+  const {userData} = useAppSelector(state=>state.user);
   const params = useParams();
   const {user_name} = params;
   useEffect(() => {
     (async function getUserProfile() {
+      setisLoading(true);
       try {
         let { data: users, error } = await supabase
           .from("users")
@@ -21,20 +23,29 @@ export default function ProfilePage({}: Props) {
           .eq("id", userData?.user?.id);
         if (!error) {
           setuserProfile(users);
+        }else{
+          console.log('error', error)
         }
-      } catch (error) {}
+      } finally{
+        setisLoading(false);
+      }
     })();
+
     (async function getUserDetails() {
       try {
         let { data: friends, error } = await supabase
           .from("users")
-          .select("*").eq("user_name", user_name)
+          .select("*, friends:friends_friend_id_fkey (is_accepted, is_pending)").eq("user_name", user_name)
           if(!error){
             setuserDetails(friends);
+          }else{
+            console.log('error', error)
           }
       } catch (error) {}
     })();
   }, [userData?.user, user_name]);
+
+
   const addFriend = async (
     userId: string,
     friendId: string,
@@ -95,7 +106,7 @@ export default function ProfilePage({}: Props) {
           {/* bio */}
           {/* add friend button */}
           {
-            !userDetails[0]?.is_accepted ? <button
+            !userDetails[0]?.friends[0]?.is_accepted ? <button
             className="bg-purple-500 text-white p-3 rounded-md flex flex-row gap-2 text-xl"
             onClick={() =>
               addFriend(
