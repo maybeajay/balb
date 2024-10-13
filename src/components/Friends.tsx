@@ -22,14 +22,16 @@ function Friends() {
   const [myFriends, setMyFriends] = useState<User[]>([]);
   const dispatch = useDispatch();
   const {userData, activeChatID} = useAppSelector(state=>state.user);
-   console.log(userData)
   const getFriends = async () => {
     if (friendsData.length > 0) {
       const friendIds = friendsData.map(friend => friend.friend_id);
       const { data: users, error } = await supabase
       .from('users')
       .select()
-      .in('id', friendIds);
+      .in('id', friendIds)
+      .order("user_name", {
+        ascending: true
+      })
       if (error) {
         catchErrors(error.message);
       } else {
@@ -46,7 +48,7 @@ function Friends() {
           .select()
           .eq('user_id', userData?.user?.id)
           .eq('is_accepted', true)
-          .eq('is_pending', false);
+          .eq('is_pending', false)
         if (error) {
           catchErrors(error.message);
         } else {

@@ -1,5 +1,4 @@
-import Empty from "../../public/rename.jpg"
-
+import Empty from '../../public/emptyUser.svg'
 function EmptyMessage() {
   return (
     <div className="flex flex-col items-center justify-center text-center p-4">

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import {supabase} from "../../supabase.js"
 import { useAppSelector } from "../types";
+import { UserProfile } from "../types";
 export function useAuth(){
 const [userDetails, setuserDetails] = useState([])
 const { userData } = useAppSelector((state) => state.user);
