@@ -1,44 +1,72 @@
-import {  useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { supabase } from "../../supabase.js";
 import { useSelector } from "react-redux";
 
-
 export default function FriendRequest() {
-  const [activeRequests, setactiveRequests] = useState([]);
+  const [activeRequests, setActiveRequests] = useState([]);
   const { userData } = useSelector((state: any) => state.user);
+
+  const subscribeToRealtime = () => {
+    const channel = supabase
+      .channel('custom-all-channel')
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'friends' },
+        (payload: any) => {
+          setActiveRequests((prev) => [...prev, payload.new]);
+        }
+      )
+      .subscribe();
+
+    return channel;
+  };
+
   useEffect(() => {
     async function getFriendRequests() {
       let { data: friends, error } = await supabase
         .from("friends")
         .select('*, users:friend_id (id, user_name, profile_url)')
-        .eq("user_id", userData?.user?.id) 
+        .eq("user_id", userData?.user?.id)
         .eq("is_accepted", false);
-  
+
       if (error) {
         console.error("Error fetching friend requests:", error);
       } else {
-        setactiveRequests(friends);
+        setActiveRequests(friends);
       }
     }
-  
+
     getFriendRequests();
+
+    const channel = subscribeToRealtime();
+
+    return () => {
+      if (channel) {
+        supabase.removeChannel(channel);
+      }
+    };
   }, [userData]);
 
-  const acceptRequest = async (friendId:string, userId:string) => {
+  const acceptRequest = async (friendId: string, userId: string) => {
     try {
       const { data, error } = await supabase
         .from('friends')
-        .update({ is_accepted: true, is_pending: false})
+        .update({ is_accepted: true, is_pending: false })
         .eq('friend_id', friendId)
-        if(data){
-          console.log(data);
-        }
-    if (error) {
+        .eq('user_id', userId); 
+
+      if (data) {
+        console.log(data);
+      }
+      if (error) {
         console.error('Error updating friend request status:', error);
         return null;
+      }
+    } catch (error) {
+      console.error('Error:', error);
     }
-    } catch (error) {}
   };
+
   return (
     <div className="relative">
       <div className="absolute right-0 mt-8 bg-white border border-gray-200 rounded-lg shadow-lg z-50 w-72">
@@ -82,6 +110,6 @@ export default function FriendRequest() {
           )}
         </div>
       </div>
-  </div>
+    </div>
   );
 }
