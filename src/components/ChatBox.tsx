@@ -58,6 +58,7 @@ function ChatBox({selectedId}) {
   };
   useEffect(() => {
     (async function getMessages() {
+      if(selectedId == null ) return ;
       let { data: individual_chats, error } = await supabase
         .from("individual_chats")
         .select("*")

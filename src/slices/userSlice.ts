@@ -2,13 +2,13 @@ import { createSlice } from '@reduxjs/toolkit'
 export interface userState {
     userData: [],
     loading: boolean,
-    activeChatID: []
+    activeChatID: null | number
   }
 
 const initialState:userState={
     userData: [],
     loading: false,
-    activeChatID: []
+    activeChatID: null
 }
 const userSlice = createSlice({
     name: "userReducer",

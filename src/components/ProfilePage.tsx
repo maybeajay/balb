@@ -10,9 +10,23 @@ export default function ProfilePage({}: Props) {
   const [isLoading, setisLoading] = useState<boolean>(true);
   const [userProfile, setuserProfile] = useState([]);
   const [userDetails, setuserDetails] = useState("");
+  const [refresh, setRefresh] = useState(false);
   const {userData} = useAppSelector(state=>state.user);
   const params = useParams();
   const {user_name} = params;
+  const subscribeToRealtime = ()=>{
+    const channels = supabase.channel('custom-all-channel')
+    .on(
+      'postgres_changes',
+      { event: '*', schema: 'public', table: 'friends' },
+      (payload:any) => {
+        // setactiveRequests({...activeRequests, ...payload.new})
+        // setuserDetails({...userDetails, ...payload.new})
+      }
+    )
+    .subscribe();
+    return channels;
+  }
   useEffect(() => {
     (async function getUserProfile() {
       setisLoading(true);
@@ -29,6 +43,13 @@ export default function ProfilePage({}: Props) {
       } finally{
         setisLoading(false);
       }
+
+      // subscribig to changes
+      // const channel = subscribeToRealtime();
+
+      return () => {
+        supabase.removeChannel(channel);
+      };
     })();
 
     (async function getUserDetails() {
@@ -43,7 +64,7 @@ export default function ProfilePage({}: Props) {
           }
       } catch (error) {}
     })();
-  }, [userData?.user, user_name]);
+  }, [userData?.user, user_name, refresh]);
 
 
   const addFriend = async (
@@ -67,6 +88,7 @@ export default function ProfilePage({}: Props) {
     } catch (error) {
     } finally {
       setisLoading(false);
+      setRefresh((prev)=>!prev)
     }
   };
 
