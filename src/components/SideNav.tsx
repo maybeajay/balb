@@ -37,7 +37,7 @@ export default function SideNav() {
   };
   return (
     <>
-      <div className="w-80 bg-white shadow-lg rounded-md p-4  h-[90%]">
+      <div className="w-80 bg-white shadow-lg rounded-md p-4   min-h-screen">
         {/* Search Bar */}
         <div className="mb-4">
           <input

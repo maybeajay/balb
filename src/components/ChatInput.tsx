@@ -14,7 +14,7 @@ const ChatInput = () => {
   const [showEmoji, setshowEmoji] = useState<boolean>(false);
   const { userData } = useAppSelector((state) => state.user);
   const [imagePreview, setimagePreview] = useState("");
-  const [image, setImage] = useState("");
+  const [image, setImage] = useState<File | null>(null);
   const uploadRef = useRef();
   const dispatch = useDispatch();
   async function addMessage(imageURl: string) {
@@ -79,12 +79,12 @@ const ChatInput = () => {
           .getPublicUrl(file?.name);
         addMessage(publicURL?.data?.publicUrl);
         setimagePreview("");
-        setImage("");
+        setImage(null);
       }
       if (error) {
         console.error("Error uploading file:", error);
         dispatch(catchErrors("Error uploading File"));
-        setImage("");
+        setImage(null);
         setimagePreview("");
         return null;
       }
@@ -109,10 +109,11 @@ const ChatInput = () => {
   let isDisabled = message.trim().length <= 0 && imagePreview == "";
   // let isDisabled = false
   // for uploading images in the chats
-  const handleImageUpload = (e: ChangeEvent<HTMLInputElement>) => {
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>
+   ) => {
     try {
       setisLoading(true);
-      const file = e?.target?.files[0];
+      const file = e?.target?.files && e?.target?.files[0];
       setImage(file);
       const objectUrl = URL.createObjectURL(file);
       setimagePreview(objectUrl);
