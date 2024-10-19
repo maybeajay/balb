@@ -67,6 +67,8 @@ export default function FriendRequest() {
     }
   };
 
+  console.log("activeRequests", activeRequests);
+
   return (
     <div className="relative">
       <div className="absolute right-0 mt-8 bg-white border border-gray-200 rounded-lg shadow-lg z-50 w-72">

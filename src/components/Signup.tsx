@@ -6,15 +6,15 @@ import { useNavigate } from "react-router-dom";
 import { MdOutlineMail } from "react-icons/md";
 import { RiLockPasswordLine } from "react-icons/ri";
 import { FaRegUser } from "react-icons/fa";
-import {motion} from 'framer-motion'
+import { motion } from "framer-motion";
 type credsType = {
   email: string | null;
   password: string | undefined;
   confirmPassword: string | undefined;
   userName: string | null;
   profile_url: string | null;
-  first_name: string | null
-  last_name: string | null
+  first_name: string | null;
+  last_name: string | null;
 };
 
 type Errors = {
@@ -23,8 +23,8 @@ type Errors = {
   confirmPassErr: string | null;
   usernameErr: string | null;
   profileErr: string | null;
-  firstNameErr: string | null
-  lastNameErr: string | null
+  firstNameErr: string | null;
+  lastNameErr: string | null;
 };
 interface HTMLInputEvent extends Event {
   target: HTMLInputElement & EventTarget;
@@ -36,14 +36,14 @@ function Signup() {
     confirmPassword: "",
     userName: "",
     profile_url: "",
-    first_name: '',
-    last_name: ""
+    first_name: "",
+    last_name: "",
   });
   const [isLoading, setisLoading] = useState<boolean>(false);
   const [file, setFile] = useState<string | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
   const [canSendReq, setcanSendReq] = useState<boolean>(false);
-  const [publicUrl, setpublicUrl] = useState<string>("")
+  const [publicUrl, setpublicUrl] = useState<string>("");
   const ref = useRef();
   const [errors, setErrors] = useState<Errors>({
     emailErr: null,
@@ -52,7 +52,7 @@ function Signup() {
     usernameErr: null,
     profileErr: null,
     firstNameErr: null,
-    lastNameErr: null
+    lastNameErr: null,
   });
   const router = useNavigate();
   const handleChange = (e: any) => {
@@ -70,7 +70,7 @@ function Signup() {
         let regex = /^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/;
         if (!value) {
           newErrors.emailErr = "Email is required*";
-        } else if (!regex.test(userData.email)) {
+        } else if (!regex.test(userData?.email)) {
           newErrors.emailErr = "Enter a valid Email Address";
         } else {
           newErrors.emailErr = null;
@@ -101,7 +101,7 @@ function Signup() {
         }
         break;
       case "userName":
-        console.log(value)
+        console.log(value);
         if (!value) {
           newErrors.usernameErr = "User name is required*";
         } else {
@@ -109,19 +109,19 @@ function Signup() {
         }
         break;
       case "first_name":
-        if(!value){
+        if (!value) {
           newErrors.firstNameErr = "First Name is required*";
-        }else{
-          newErrors.firstNameErr = null
+        } else {
+          newErrors.firstNameErr = null;
         }
-      break ;
+        break;
       case "last_name":
-        if(!value){
+        if (!value) {
           newErrors.lastNameErr = "First Name is required*";
-        }else{
-          newErrors.lastNameErr = null
+        } else {
+          newErrors.lastNameErr = null;
         }
-      break ;
+        break;
       default:
         break;
     }
@@ -179,28 +179,28 @@ function Signup() {
             isValid = true;
           }
           break;
-          case "userName":
-            console.log(value)
-            if (!value) {
-              newErrors.usernameErr = "User name is required*";
-            } else {
-              newErrors.usernameErr = null;
-            }
-            break;
-          case "first_name":
-            if(!value){
-              newErrors.firstNameErr = "First Name is required*";
-            }else{
-              newErrors.firstNameErr = null
-            }
-          break ;
-          case "last_name":
-            if(!value){
-              newErrors.lastNameErr = "First Name is required*";
-            }else{
-              newErrors.lastNameErr = null
-            }
-          break ;
+        case "userName":
+          console.log(value);
+          if (!value) {
+            newErrors.usernameErr = "User name is required*";
+          } else {
+            newErrors.usernameErr = null;
+          }
+          break;
+        case "first_name":
+          if (!value) {
+            newErrors.firstNameErr = "First Name is required*";
+          } else {
+            newErrors.firstNameErr = null;
+          }
+          break;
+        case "last_name":
+          if (!value) {
+            newErrors.lastNameErr = "First Name is required*";
+          } else {
+            newErrors.lastNameErr = null;
+          }
+          break;
         default:
           break;
       }
@@ -214,68 +214,77 @@ function Signup() {
         const { data, error } = await supabase.auth.signUp({
           email: userData.email,
           password: userData.password,
-          options: {
-            emailRedirectTo: "https:localhost:3000",
-          },
         });
         if (data) {
-          adduserToDB()
-          const email = userData?.email;
-          if (email) {
-            router(`/verify-email/`, {
-              state: {
-                email: email,
-              },
-            });
-          } else {
-            console.error("User email is not defined.");
-          }
+          adduserToDB(data);
+          router(`/auth/login`)
         } else {
           console.error("Data is not defined.");
+          return ;
         }
       } catch (error) {
+        console.log("error", error);
+        return ;
       } finally {
         setisLoading(false);
       }
     }
   };
 
-  async function uploadAvatar(file:any) {
-    const { data, error } = await supabase
-      .storage
-      .from('avatar/dp')
-      .upload(`${file?.name+Date.now()*1000}`,file, {
-        cacheControl: '3600'
-      })
-    if(data){
+  async function uploadAvatar(file: any) {
+    if (!file.name.endsWith(".jpg")) {
+      console.error("Only JPG files are allowed.");
+      return null;
+    }
+
+    const fileName = `${Date.now() * 1000 + file?.name}`;
+
+    const { data, error } = await supabase.storage
+      .from("avatar/public")
+      .upload(fileName, file, {
+        cacheControl: "3600",
+      });
+
+      let publicURL; 
+    if (data) {
       console.log("data", data);
-      const  publicURL  = supabase.storage.from('avatar/dp').getPublicUrl(file?.name);
-      console.log("PUVADASSD", publicURL)
-      if(publicURL!=undefined){
+       publicURL = supabase.storage
+        .from("avatar/public")
+        .getPublicUrl(fileName);
+
+      console.log("Public URL:", publicURL);
+
+      if (publicURL != undefined) {
         setcanSendReq(true);
-        setpublicUrl(publicURL)
+        setpublicUrl(publicURL);
       }
     }
-    if (error) {
-      console.error('Error uploading file:', error)
-      return null
-    }
-  
-    // Construct the URL to access the uploaded file
-    return data?.fullPath
-  }
-  
-  
-  
 
-  const adduserToDB = async() => {
+    if (error) {
+      console.error("Error uploading file:", error);
+      return null;
+    }
+    return publicURL?.data?.publicURl;
+  }
+
+  const adduserToDB = async (userId) => {
     try {
-      await uploadAvatar(file)
-      // const { data, error } = await supabase
-      //   .from("users")
-      //   .insert([{ user_name: userData.userName, first_name: userData.first_name, last_name: userData.last_name, created_at: new Date(), profile_url: publicUrl}])
-      //   .select();
-      //   console.log("DATA", data)
+      let avatar = await uploadAvatar(file);
+      const { data, error } = await supabase
+        .from("users")
+        .insert([
+          {
+            id: userId?.user?.id,
+            email: userData?.email,
+            user_name: userData.userName,
+            first_name: userData.first_name,
+            last_name: userData.last_name,
+            created_at: new Date(),
+            profile_url: avatar,
+          },
+        ])
+        .select();
+      console.log("DATA", data);
     } catch (error) {
       console.log("ERRRR", error);
     }
@@ -565,7 +574,10 @@ function Signup() {
                   <p className="text-red-600 text-md">{errors?.passErr}</p>
                 </div>
                 <div className="w-full px-3 mb-12">
-                  <label htmlFor="" className="confirmpass text-xs font-semibold px-1">
+                  <label
+                    htmlFor=""
+                    className="confirmpass text-xs font-semibold px-1"
+                  >
                     Confirm Password
                   </label>
                   <div className="flex">
@@ -615,9 +627,7 @@ function Signup() {
                       onChange={handleChange}
                     />
                   </div>
-                  <p className="text-red-600 text-md">
-                    {errors?.lastNameErr}
-                  </p>
+                  <p className="text-red-600 text-md">{errors?.lastNameErr}</p>
                 </div>
               </div>
               {/* for profile picture */}
@@ -625,10 +635,10 @@ function Signup() {
                 <label htmlFor="image" className="text-xs font-semibold px-1">
                   Profile Picture
                 </label>
-                <motion.div 
-                 whileTap={{ scale:  0.9}}
-                 drag="x"
-                 dragConstraints={{ left: -100, right: 100 }}               
+                <motion.div
+                  whileTap={{ scale: 0.9 }}
+                  drag="x"
+                  dragConstraints={{ left: -100, right: 100 }}
                   className="bg-gray-300 w-[120px] h-[120px] rounded-[60px] items-center flex justify-center profile_box_Shadow"
                   onClick={() => ref?.current.click()}
                 >

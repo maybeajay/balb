@@ -25,6 +25,7 @@ function Friends() {
 
   // Fetch friend details from 'users' table
   const getFriends = async (friendIds: string[]) => {
+    console.log("frinds ids", friendIds);
     const { data: users, error } = await supabase
       .from('users')
       .select()
@@ -39,43 +40,32 @@ function Friends() {
   };
 
   const subscribeToRealtime = () => {
-    const channel = supabase
-      .channel('custom-all-channel')
-      .on(
-        'postgres_changes',
-        { event: '*', schema: 'public', table: 'friends' },
-        async (payload: any) => {
-          console.log('Change received! at frirndsda tavs', payload);
-
-          if (payload.eventType === 'INSERT') {
-            const newFriendId = payload.new.friend_id;
-            const { data: newFriend, error } = await supabase
-              .from('users')
-              .select()
-              .eq('id', newFriendId)
-              .single();
-
-            if (newFriend) {
-              setMyFriends((prev) => [...prev, newFriend]);
-            }
-          } else if (payload.eventType === 'DELETE') {
-            setMyFriends((prev) =>
-              prev.filter((friend) => friend.id !== payload.old.friend_id)
-            );
-          } else if (payload.eventType === 'UPDATE') {
-            setMyFriends((prev) =>
-              prev.map((friend) =>
-                friend.id === payload.new.friend_id ? payload.new : friend
-              )
-            );
+    try {
+      const channel = supabase
+        .channel('custom-all-channel')
+        .on(
+          'postgres_changes',
+          { event: '*', schema: 'public', table: 'friends' },
+          (payload) => {
+            console.log('Realtime change detected:', payload);
           }
-        }
-      )
-      .subscribe();
-
-    return channel;
+        )
+        .subscribe((status) => {
+          console.log('Subscription status:', status);
+          if (status === 'SUBSCRIBED') {
+            console.log('Successfully subscribed to friends table realtime!');
+          } else if (status === 'TIMED_OUT') {
+            console.warn('WebSocket connection timed out. Retrying...');
+            setTimeout(() => subscribeToRealtime(), 5000); // Retry after 5 seconds
+          }
+        });
+  
+      return channel;
+    } catch (error) {
+      console.error('WebSocket connection failed:', error);
+    }
   };
-
+  
   useEffect(() => {
     const getUserFriends = async () => {
       try {
@@ -85,7 +75,7 @@ function Friends() {
           .eq('user_id', userData?.user?.id)
           .eq('is_accepted', true)
           .eq('is_pending', false);
-
+  
         if (error) {
           catchErrors(error.message);
         } else {
@@ -95,14 +85,53 @@ function Friends() {
         catchErrors(error?.message);
       }
     };
-
+  
     getUserFriends();
-    const channel = subscribeToRealtime();
+  
+    const subscribeToRealtime = () => {
+      const channel = supabase
+        .channel('friends')
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'friends' }, (payload) => {
+          console.log('Change received!', payload);
 
-    console.log("mountedd!!!;;");
+          console.log("payload.eventType", payload.eventType)
+    
+          if (payload.eventType === 'DELETE') {
+            // Filter out the deleted friend from myFriends
+            console.log("inside the payload delete  type")
+            setMyFriends((prevFriends) =>
+              prevFriends.filter((item) => item.id !== payload.old.id)
+            );
+          }
+    
+          if (payload.eventType === 'INSERT') {
+            console.log("insie the insert statemnent")
+            // Add the new friend to myFriends
+            setMyFriends((prevFriends) => [...prevFriends, payload.new]);
+          }
+    
+          // Optionally handle updates (if needed)
+          if (payload.eventType === 'UPDATE') {
+            setMyFriends((prevFriends) =>
+              prevFriends.map((friend) =>
+                friend.id === payload.new.id ? payload.new : friend
+              )
+            );
+          }
+        })
+        .subscribe();
+    
+      return channel;
+    };
+    
+  
+    const channel = subscribeToRealtime();
+  
+    console.log("mounted!!!;;");
+  
     return () => {
       supabase.removeChannel(channel);
-      console.log("un mountedd!!");
+      console.log("unmounted!!");
     };
   }, [userData?.user?.id]);
 
@@ -117,6 +146,9 @@ function Friends() {
   const handleFriendSelect = (selectedFriend: User) => {
     dispatch(activeChat(selectedFriend?.id));
   };
+
+
+  console.log("my frinds", myFriends)
 
   return (
     <div>
