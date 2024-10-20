@@ -25,21 +25,20 @@ export default function FriendRequest() {
     async function getFriendRequests() {
       let { data: friends, error } = await supabase
         .from("friends")
-        .select('*, users:friend_id (id, user_name, profile_url)')
-        .eq("user_id", userData?.user?.id)
+        .select('*, users:user_id (id, user_name, profile_url)') 
+        .eq("friend_id", userData?.user?.id) 
         .eq("is_accepted", false);
-
       if (error) {
         console.error("Error fetching friend requests:", error);
       } else {
         setActiveRequests(friends);
       }
     }
-
+  
     getFriendRequests();
-
+  
     const channel = subscribeToRealtime();
-
+  
     return () => {
       if (channel) {
         supabase.removeChannel(channel);

@@ -5,11 +5,11 @@ import FriendsIcon from "./FriendsIcon.js";
 import { useState } from "react";
 const Header = () => {
   const {userDetails} = useAuth();
-  const [isFocused, setisFocused] = useState(false)
+  const [isFocused, setisFocused] = useState(false);
   return (
     <div className="header  top-0 bg-white flex items-center justify-between px-8 py-2">
       <Link to={"/"} className="flex flex-row items-center">
-        <img src={"/logo.png"} alt="Logo" width={80} />
+        <img src={"/logo.png"} alt="Logo" width={80}/>
       </Link>
 
       {/* friend request section */}

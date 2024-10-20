@@ -10,15 +10,18 @@ type userSearchResults = {
 };
 import {debounce} from "../utils/constants"
 import ActiveUsers from "../shared/ActiveUsers.js";
+import { useAuth } from "../hooks/useAuth.js";
 export default function SideNav() {
   const [searchVal, setsearchVal] = useState<string>("");
-  const [searchRes, setsearchRes] = useState<userSearchResults[]>([]);
+  const [searchRes, setsearchRes] = useState<userSearchResults[]>([])
+  const {userDetails} = useAuth();
   const searchByUsername = async (username: string) => {
     try {
       let { data: users, error } = await supabase
         .from("users")
         .select("*")
-        .eq("user_name", username.trim());
+        .eq("user_name", username.trim())
+        .neq("id", userDetails[0]?.id)
       setsearchRes(users);
       if (error) {
         console.log("ERR", error);
@@ -29,7 +32,7 @@ export default function SideNav() {
   };
   const debouncedSearch = useCallback(debounce((val: string) => {
     searchByUsername(val);
-  }, 800), []);
+  }, 800), [userDetails]);
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setsearchVal(e.target.value);
     debouncedSearch(e.target.value);
@@ -50,7 +53,7 @@ export default function SideNav() {
         </div>
 
             {/* show search results here */}
-        {searchRes.length >= 1 && <UserSeachResults users={searchRes} />}
+        {searchRes?.length >= 1 ? <UserSeachResults users={searchRes} /> : <p>No users found!!</p>}
         {/* Active Users */}
         <ActiveUsers />
 

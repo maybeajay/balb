@@ -42,7 +42,3 @@ function ActiveUsers() {
 }
 
 export default ActiveUsers;
-function neq(arg0: string, id: any) {
-    throw new Error("Function not implemented.");
-}
-
