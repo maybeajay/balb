@@ -25,13 +25,11 @@ function Friends() {
 
   // Fetch friend details from 'users' table
   const getFriends = async (friendIds: string[]) => {
-    console.log("frinds ids", friendIds);
     const { data: users, error } = await supabase
       .from('users')
       .select()
       .in('id', friendIds)
       .order('user_name', { ascending: true });
-
     if (error) {
       catchErrors(error.message);
     } else {
@@ -65,14 +63,15 @@ function Friends() {
       console.error('WebSocket connection failed:', error);
     }
   };
-  
+
+
   useEffect(() => {
     const getUserFriends = async () => {
       try {
         const { data: friends, error } = await supabase
           .from('friends')
           .select()
-          .eq('user_id', userData?.user?.id)
+          .or(`user_id.eq.${userData?.user?.id},friend_id.eq.${userData?.user?.id}`)
           .eq('is_accepted', true)
           .eq('is_pending', false);
   
@@ -88,68 +87,23 @@ function Friends() {
   
     getUserFriends();
   
-    const subscribeToRealtime = () => {
-      const channel = supabase
-        .channel('friends')
-        .on('postgres_changes', { event: '*', schema: 'public', table: 'friends' }, (payload) => {
-          console.log('Change received!', payload);
-
-          console.log("payload.eventType", payload.eventType)
-    
-          if (payload.eventType === 'DELETE') {
-            // Filter out the deleted friend from myFriends
-            console.log("inside the payload delete  type")
-            setMyFriends((prevFriends) =>
-              prevFriends.filter((item) => item.id !== payload.old.id)
-            );
-          }
-    
-          if (payload.eventType === 'INSERT') {
-            console.log("insie the insert statemnent")
-            // Add the new friend to myFriends
-            setMyFriends((prevFriends) => [...prevFriends, payload.new]);
-          }
-    
-          // Optionally handle updates (if needed)
-          if (payload.eventType === 'UPDATE') {
-            setMyFriends((prevFriends) =>
-              prevFriends.map((friend) =>
-                friend.id === payload.new.id ? payload.new : friend
-              )
-            );
-          }
-        })
-        .subscribe();
-    
-      return channel;
-    };
-    
-  
     const channel = subscribeToRealtime();
-  
-    console.log("mounted!!!;;");
-  
     return () => {
       supabase.removeChannel(channel);
-      console.log("unmounted!!");
     };
   }, [userData?.user?.id]);
-
   useEffect(() => {
     if (friendsData.length > 0) {
-      const friendIds = friendsData.map((friend) => friend.friend_id);
+      const friendIds = friendsData.map((friend) => 
+        friend.user_id === userData?.user?.id ? friend.friend_id : friend.user_id
+      );
       getFriends(friendIds);
     }
   }, [friendsData]);
-
   // for selecting a friend and highlighting the user
   const handleFriendSelect = (selectedFriend: User) => {
     dispatch(activeChat(selectedFriend?.id));
   };
-
-
-  console.log("my frinds", myFriends)
-
   return (
     <div>
       <h2 className="text-sm font-semibold text-gray-600 mb-2">All Chats</h2>

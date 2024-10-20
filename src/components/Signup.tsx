@@ -210,14 +210,12 @@ function Signup() {
     if (!isValid) {
     } else {
       try {
-        setisLoading(true);
         const { data, error } = await supabase.auth.signUp({
           email: userData.email,
           password: userData.password,
         });
         if (data) {
           adduserToDB(data);
-          router(`/auth/login`)
         } else {
           console.error("Data is not defined.");
           return ;
@@ -252,7 +250,7 @@ function Signup() {
         .from("avatar/public")
         .getPublicUrl(fileName);
 
-      console.log("Public URL:", publicURL);
+      console.log("Public URL:", publicUrl);
 
       if (publicURL != undefined) {
         setcanSendReq(true);
@@ -264,12 +262,13 @@ function Signup() {
       console.error("Error uploading file:", error);
       return null;
     }
-    return publicURL?.data?.publicURl;
+    return publicURL.data.publicUrl;
   }
 
   const adduserToDB = async (userId) => {
     try {
       let avatar = await uploadAvatar(file);
+      console.log("avatar", avatar);
       const { data, error } = await supabase
         .from("users")
         .insert([
@@ -284,6 +283,7 @@ function Signup() {
           },
         ])
         .select();
+        router(`/auth/login`)
       console.log("DATA", data);
     } catch (error) {
       console.log("ERRRR", error);

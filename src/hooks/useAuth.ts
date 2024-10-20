@@ -7,7 +7,7 @@ const [userDetails, setuserDetails] = useState([])
 const { userData } = useSelector((state:userTypeData) => state.user);
   useEffect(() => {
     (async function getData() {
-      let { data: users, error } = await supabase.from("users").select("*");
+      let { data: users, error } = await supabase.from("users").select("*").eq("id", userData?.user?.id);
       if(!error){
         setuserDetails(users);
       }

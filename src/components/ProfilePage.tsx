@@ -128,14 +128,14 @@ export default function ProfilePage({}: Props) {
           {/* bio */}
           {/* add friend button */}
           {
-            !userDetails[0]?.friends[0]?.is_accepted ? <button
+            !userDetails[0]?.friends[0]?.is_accepted && userDetails[0]?.friends[0]?.is_pending == false   ? <button
             className="bg-purple-500 text-white p-3 rounded-md flex flex-row gap-2 text-xl"
             onClick={() =>
               addFriend(
               userData?.user?.id,
               userDetails[0]?.id,
-              userDetails[0]?.first_name,
-              userDetails[0]?.last_name
+              userProfile[0]?.first_name,
+              userProfile[0]?.last_name
               )
             }
           >
