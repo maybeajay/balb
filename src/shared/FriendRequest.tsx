@@ -46,28 +46,34 @@ export default function FriendRequest() {
     };
   }, [userData]);
 
+  
+
   const acceptRequest = async (friendId: string, userId: string) => {
     try {
       const { data, error } = await supabase
         .from('friends')
-        .update({ is_accepted: true, is_pending: false })
-        .eq('friend_id', friendId)
-        .eq('user_id', userId); 
-
-      if (data) {
-        console.log(data);
-      }
+        .update({ is_accepted: true, is_pending: false, is_rejected: false })
+        .or(`user_id.eq.${friendId},friend_id.eq.${friendId}`)
+        .select();
+  
       if (error) {
-        console.error('Error updating friend request status:', error);
+        console.error('Supabase error:', error);
         return null;
       }
+  
+      if (data?.length === 0) {
+        console.log('No data returned, check if the record exists for the provided userId and friendId.');
+        return null;
+      }
+  
+      console.log('Friend request accepted:', data);
+      return data; 
     } catch (error) {
-      console.error('Error:', error);
+      console.error('Unexpected error:', error);
     }
   };
-
-  console.log("activeRequests", activeRequests);
-
+  
+  
   return (
     <div className="relative">
       <div className="absolute right-0 mt-8 bg-white border border-gray-200 rounded-lg shadow-lg z-50 w-72">
@@ -96,7 +102,7 @@ export default function FriendRequest() {
                 <div className="flex space-x-2">
                   <button
                     className="bg-green-500 text-white px-2 py-1 rounded-full hover:bg-green-600"
-                    onClick={() => acceptRequest(item?.users?.id, item?.user_id)}
+                    onClick={() => acceptRequest(item?.users?.id, userData?.user?.id)}
                   >
                     Accept
                   </button>
