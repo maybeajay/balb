@@ -3,7 +3,7 @@ import { supabase } from "../../supabase.js";
 import { format } from "date-fns";
 import EmptyMessage from "./EmptyMessage.js";
 import { useAppSelector } from "../types.js";
-import { CheckCheck } from "lucide-react";
+import { CheckCheck, Loader } from "lucide-react";
 import { userTypeData, Message } from "../types.ts";
 
 function ChatBox({ selectedId }: { selectedId: string | null }) {
@@ -11,7 +11,6 @@ function ChatBox({ selectedId }: { selectedId: string | null }) {
   const [isLoading, setisLoading] = useState(false);
   const [newMsg, setnewMsg] = useState<string>("");
   const { userData } = useAppSelector(state=>state.user);
-
   // for realtime messages and updates
   const subscribeToRealtime = async () => {
     let channels;
@@ -23,6 +22,7 @@ function ChatBox({ selectedId }: { selectedId: string | null }) {
           "postgres_changes",
           { event: "*", schema: "public", table: "individual_chats" },
           (payload) => {
+            console.log("payloadd", payload)
             setMessage((prevMessages: Message[]) => {
               let index = prevMessages.findIndex(
                 (message) =>
@@ -63,21 +63,30 @@ function ChatBox({ selectedId }: { selectedId: string | null }) {
 
   useEffect(() => {
     (async function getMessages() {
-      if (selectedId == null) return;
+      if (selectedId == null || !userData?.user?.id) return;
+      
       let { data: individual_chats, error } = await supabase
         .from("individual_chats")
         .select("*")
-        .eq("receiver_id", selectedId)
+        .or(
+          `sender_id.eq.${userData.user.id},receiver_id.eq.${userData.user.id}`
+        )
+        .or(
+          `sender_id.eq.${selectedId},receiver_id.eq.${selectedId}`
+        )
         .order("created_at", { ascending: true });
-
+  
       if (individual_chats) {
         setMessage(individual_chats as Message[]);
       }
+  
+      if (error) {
+        console.error("Error fetching messages:", error);
+      }
     })();
-
+  
     const channel = subscribeToRealtime();
-  }, [selectedId]);
-
+  }, [selectedId, userData?.user?.id]);
   const updateMessageSeenStatus = async (messageId: string) => {
     const { error } = await supabase
       .from("individual_chats")
@@ -168,7 +177,7 @@ function ChatBox({ selectedId }: { selectedId: string | null }) {
                   </div>
                 ))
               ) : (
-                <EmptyMessage />
+                !isLoading && <EmptyMessage />
               )}
             </div>
           </div>
@@ -182,13 +191,15 @@ function ChatBox({ selectedId }: { selectedId: string | null }) {
               onChange={(e) => setnewMsg(e.target.value)}
               value={newMsg}
             />
-            <button
-              className="px-4 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700"
-              disabled={newMsg.trim().length < 1}
-              onClick={sendMessage}
-            >
-              Send
-            </button>
+           {
+            !isLoading ?  <button
+            className="px-4 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700"
+            disabled={newMsg.trim().length < 1}
+            onClick={sendMessage}
+          >
+            Send
+          </button> : <Loader size={1} color="blue" />
+           }
           </div>
         </div>
       </div>
