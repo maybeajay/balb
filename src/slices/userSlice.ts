@@ -1,45 +1,57 @@
-import { createSlice } from '@reduxjs/toolkit'
-export interface userState {
-    userData: [],
-    loading: boolean,
-    activeChatID: null | number
-  }
+import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
 
-const initialState:userState={
-    userData: [],
-    loading: false,
-    activeChatID: null
+export interface UserState {
+  userData: any[];
+  loading: boolean;
+  activeChatID: number | null;
 }
+
+const initialState: UserState = {
+  userData: [],
+  loading: true,
+  activeChatID: null,
+};
+
+// Define the async thunk
+export const getDataAsync = createAsyncThunk('user/getData', async () => {
+  const storedData = localStorage.getItem('userInfo');
+  return storedData ? JSON.parse(storedData) : [];
+});
+
 const userSlice = createSlice({
-    name: "userReducer",
-    initialState,
-    reducers:{
-        setLoading: (state, action) => {
-            state.loading = action.payload;
-        },
-        addToLocal: (state, action)=>{
-            localStorage.setItem("userInfo",action.payload)
-            console.log(action.payload)
-            state.userData = JSON.parse(action.payload)
-        },
-        getData: (state) => {
-            const storedData = localStorage.getItem('userInfo');
-            if (storedData) {
-                state.userData = JSON.parse(storedData);
-            }
-        },
-        signOut: (state)=>{
-            state.loading = true;
-            localStorage.removeItem("userInfo");
-            state.userData = []
-            state.loading = false;
-        },
-        activeChat: (state, action)=>{
-            state.activeChatID = action.payload
-        }
-    }
+  name: 'userReducer',
+  initialState,
+  reducers: {
+    setLoading: (state, action: PayloadAction<boolean>) => {
+      state.loading = action.payload;
+    },
+    addToLocal: (state, action: PayloadAction<string>) => {
+      localStorage.setItem('userInfo', action.payload);
+      state.userData = JSON.parse(action.payload);
+    },
+    signOut: (state) => {
+      localStorage.removeItem('userInfo');
+      state.userData = [];
+      state.loading = false;
+    },
+    activeChat: (state, action: PayloadAction<number | null>) => {
+      state.activeChatID = action.payload;
+    },
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(getDataAsync.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(getDataAsync.fulfilled, (state, action: PayloadAction<any[]>) => {
+        state.userData = action.payload;
+        state.loading = false;
+      })
+      .addCase(getDataAsync.rejected, (state) => {
+        state.loading = false;
+      });
+  },
+});
 
-})
-
-export const {addToLocal, getData, setLoading, signOut, activeChat} = userSlice.actions
+export const { addToLocal, setLoading, signOut, activeChat } = userSlice.actions;
 export default userSlice.reducer;
