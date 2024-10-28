@@ -5,8 +5,8 @@ import Signup from "./components/Signup";
 import Home from "./components/Home";
 import VerifyEmail from "./components/VerifyEmail";
 import { store } from "./store";
-import { Provider, useDispatch } from "react-redux";
-import { getData, setLoading } from "./slices/userSlice";
+import { Provider } from "react-redux";
+import {  setLoading, getDataAsync } from "./slices/userSlice";
 import { useEffect } from "react";
 import Header from "./components/Header";
 import { Toaster } from "react-hot-toast";
@@ -14,7 +14,7 @@ import HomeScreen from "./components/HomeScreen";
 import ProfilePage from "./components/ProfilePage";
 import MyPrfofile from "./components/Profile";
 import Settings from "./components/Settings";
-import { useAppSelector } from "./types";
+import { useAppSelector, useAppDispatch } from "./types";
 function UnAuthRoutes() {
   return(
   useRoutes([
@@ -40,18 +40,22 @@ function AfterAuthRoutes() {
 }
 
 function FinalRoutes(){
-  const dispatch = useDispatch();
-  const { userData, loading } = useAppSelector((state: any) => state.user);
-  const isUserDataEmpty = Array.isArray(userData) && userData.length === 0;
+  const dispatch = useAppDispatch();
   useEffect(() => {
-    dispatch(setLoading(true));
-    dispatch(getData());
-    dispatch(setLoading(false));
+    const fetchData = async () => {
+      dispatch(setLoading(true));
+      await dispatch(getDataAsync());
+      dispatch(setLoading(false));
+    };
+    fetchData();
   }, [dispatch]);
+  const { userData, loading } = useAppSelector((state: any) => state.user);
 
+  
+  const isUserDataEmpty = !loading && Array.isArray(userData) && userData.length === 0;
   if (loading) {
     return <div>Loading...</div>;
-
+    
   }
   else{
     return isUserDataEmpty ? <UnAuthRoutes /> : <>

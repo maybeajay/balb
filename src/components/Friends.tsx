@@ -25,7 +25,6 @@ function Friends() {
 
   // Fetch friend details from 'users' table
   const getFriends = async (friendIds: string[]) => {
-    console.log("friends ids", friendIds)
     const { data: users, error } = await supabase
       .from('users')
       .select()
@@ -94,7 +93,6 @@ function Friends() {
     };
   }, [userData?.user?.id]);
   useEffect(() => {
-    console.log("frineds data", friendsData)
     if (friendsData.length > 0) {
       const friendIds = friendsData.map((friend) => 
         friend.user_id === userData?.user?.id ? friend.friend_id : friend.user_id
