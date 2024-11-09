@@ -85,6 +85,9 @@ function ChatBox({ selectedId }: { selectedId: string | null }) {
     })();
   
     const channel = subscribeToRealtime();
+
+
+    return ()=>supabase.removeChannel(channel);
   }, [selectedId, userData?.user?.id]);
   const updateMessageSeenStatus = async (messageId: string) => {
     const { error } = await supabase
@@ -117,7 +120,7 @@ function ChatBox({ selectedId }: { selectedId: string | null }) {
   const sendMessage = async () => {
     try {
       setisLoading(true);
-      const { data, error } = await supabase
+      const { error } = await supabase
         .from("individual_chats")
         .insert([
           {

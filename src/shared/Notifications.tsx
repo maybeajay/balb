@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { supabase } from "../../supabase.js";
 import ToastNotifs from "./ToastNotifs.js";
 interface Notification {
@@ -29,9 +29,12 @@ const Notifications = () => {
             setNotifs((prev)=>[...prev, payload.new])
           }
         ).subscribe();
+      return channels;
     };
+
     // get the real time notifcations
-    getRealtimeNotifications();
+    const channel  = getRealtimeNotifications();
+    return()=>supabase.removeChannel(channel)
     console.log("NOTFTSS", notifs);
   }, []);
   return (

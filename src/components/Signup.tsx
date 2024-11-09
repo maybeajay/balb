@@ -7,6 +7,7 @@ import { MdOutlineMail } from "react-icons/md";
 import { RiLockPasswordLine } from "react-icons/ri";
 import { FaRegUser } from "react-icons/fa";
 import { motion } from "framer-motion";
+import Loader from "../shared/Loader.js";
 type credsType = {
   email: string;
   password: string | undefined;
@@ -42,7 +43,6 @@ function Signup() {
   const [isLoading, setisLoading] = useState<boolean>(false);
   const [file, setFile] = useState<string | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
-  const [canSendReq, setcanSendReq] = useState<boolean>(false);
   const [publicUrl, setpublicUrl] = useState<string>("");
   const ref:any = useRef();
   const [errors, setErrors] = useState<Errors>({
@@ -210,7 +210,7 @@ function Signup() {
     if (!isValid) {
     } else {
       try {
-        const { data, error } = await supabase.auth.signUp({
+        const { data } = await supabase.auth.signUp({
           email: userData.email,
           password: userData.password,
         });
@@ -253,7 +253,6 @@ function Signup() {
       console.log("Public URL:", publicUrl);
 
       if (publicURL != undefined) {
-        setcanSendReq(true);
         setpublicUrl(publicURL);
       }
     }
@@ -269,7 +268,7 @@ function Signup() {
     try {
       let avatar = await uploadAvatar(file);
       console.log("avatar", avatar);
-      const { data, error } = await supabase
+      const { data } = await supabase
         .from("users")
         .insert([
           {
@@ -297,6 +296,10 @@ function Signup() {
     const objectUrl = URL.createObjectURL(file);
     setPreview(objectUrl);
   };
+
+  if(isLoading){
+    return <Loader size={5} color="blue"/>
+  }
 
   return (
     <div className="min-w-screen min-h-screen bg-gray-900 flex items-center justify-center px-5 py-5">

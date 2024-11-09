@@ -10,13 +10,13 @@ interface User {
   email: string;
 }
 
-interface Friend {
-  id: string;
-  user_id: string;
-  friend_id: string;
-  is_accepted: boolean;
-  is_pending: boolean;
-}
+// interface Friend {
+//   id: string;
+//   user_id: string;
+//   friend_id: string;
+//   is_accepted: boolean;
+//   is_pending: boolean;
+// }
 function Friends() {
   const [friendsData, setFriendsData] = useState<any>([]);
   const [myFriends, setMyFriends] = useState<any>([]);
@@ -49,11 +49,8 @@ function Friends() {
           }
         )
         .subscribe((status) => {
-          console.log('Subscription status:', status);
           if (status === 'SUBSCRIBED') {
-            console.log('Successfully subscribed to friends table realtime!');
           } else if (status === 'TIMED_OUT') {
-            console.warn('WebSocket connection timed out. Retrying...');
             setTimeout(() => subscribeToRealtime(), 5000); // Retry after 5 seconds
           }
         });
@@ -102,7 +99,7 @@ function Friends() {
   }, [friendsData]);
   // for selecting a friend and highlighting the user
   const handleFriendSelect = (selectedFriend: User) => {
-    dispatch(activeChat(+selectedFriend?.id));
+    dispatch(activeChat(selectedFriend?.id));
   };
   return (
     <div>

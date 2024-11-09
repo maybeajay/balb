@@ -1,13 +1,10 @@
 import SideNav from './SideNav'
-import FriendRequest from '../shared/FriendRequest.js';
-import Notifications from '../shared/Notifications.js';
 import ChatBox from './ChatBox.js';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useAppSelector } from '../types.js';
 import {supabase} from "../../supabase.js"
 function IndividualChat() {
   const {activeChatID, userData}:any = useAppSelector(state=>state?.user);
-  const [isFriendReqVisible, setisFriendReqVisible] = useState<boolean>(false);
 
   // function to update the current active user 
   useEffect(() => {
@@ -25,7 +22,7 @@ function IndividualChat() {
   const updateUserStatus = async (isActive) => {
     if (!userData?.user?.id) return;
 
-    const { data, error } = await supabase
+    const { error } = await supabase
       .from('users')
       .update({ is_active: isActive })
       .eq('id', userData.user.id);  
@@ -41,10 +38,7 @@ function IndividualChat() {
         <div className="basis-1/5">
           <SideNav />
         </div>
-        {
-          isFriendReqVisible && <FriendRequest />
-        }
-  
+
         {/* Main Content (ChatBox) with 80% width */}
         <main className="flex-grow">
           <div className="flex">

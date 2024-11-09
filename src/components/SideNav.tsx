@@ -14,7 +14,7 @@ import { useAuth } from "../hooks/useAuth.js";
 export default function SideNav() {
   const [searchVal, setsearchVal] = useState<string>("");
   const [searchRes, setsearchRes] = useState<userSearchResults[]>([])
-  const {userDetails} = useAuth();
+  const {userDetails}:any = useAuth();
   const searchByUsername = async (username: string) => {
     try {
       let { data: users, error } = await supabase

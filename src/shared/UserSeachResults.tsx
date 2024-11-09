@@ -6,9 +6,9 @@ type Props = {
 }
 
 export default function UserSeachResults({users}: Props) {
-  const highlightMatchingChars = (userName)=>{
+  // const highlightMatchingChars = (userName)=>{
 
-  }
+  // }
   return (
    <div className='flex flex-row p-3 relative z-55'>
     <div className='flex justify-between items-center'>

@@ -28,12 +28,10 @@ function GlobalChat() {
   const [messages, setMessages] = useState<Data[]>([]);
   const [showModal, setshowModal] = useState<boolean>(false);
   const [uniqueId, setuniqueId] = useState<number | null>(null);
-  const [currUser, setcurrUser] = useState([]);
   const { userData } = useSelector((state: any) => state.user);
   const [isActive, setisActive] = useState<boolean>(false);
   const [imageUrl, setimageUrl] = useState<string | undefined>("");
   const [isnewMessage, setisNewMessage] = useState<boolean>(false);
-  const [senderId, setsenderId] = useState<string>("");
   const [isLoading, setisLoading] = useState<boolean>(false);
   const [showOptions, setshowOptions] = useState<boolean[]>(
     Array(messages.length).fill(false)
@@ -53,17 +51,19 @@ function GlobalChat() {
     } catch (error) {
     }
   };
-  const getCurrentUser = async () => {
-    let { data: users, error } = await supabase
-      .from("users")
-      .select("*")
-      .eq("id", userData?.id);
-    setcurrUser(users);
-  };
+  // const getCurrentUser = async () => {
+  //   let { data: users, erorr } = await supabase
+  //     .from("users")
+  //     .select("*")
+  //     .eq("id", userData?.id);
+  //     if(erorr) return ; 
+  //   setcurrUser(users);
+  // };
   const subscribeToRealtime = async () => {
+    let channels;
     try {
       setisLoading(true);
-      const channels = supabase
+       channels = supabase
         .channel("custom-all-channel")
         .on(
           "postgres_changes",
@@ -97,7 +97,6 @@ function GlobalChat() {
                 } else {
                   // Add the new message to the messages array
                   setisNewMessage(true);
-                  setsenderId(payload.new);
                   return [...prevMessages, payload.new];
                 }
               }
@@ -111,12 +110,16 @@ function GlobalChat() {
     } finally {
       setisLoading(false);
     }
+    return channels;
   };
 
   useEffect(() => {
     fetchAllMessages();
-    subscribeToRealtime();
-    getCurrentUser();
+    let channel = subscribeToRealtime();
+    return ()=>{
+      supabase.removeChannel(channel);
+    }
+    // getCurrentUser();
   }, []);
 
   const formateDate = (date: string) => {
