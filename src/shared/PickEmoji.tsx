@@ -1,10 +1,10 @@
-import React, {Dispatch, SetStateAction} from 'react'
+import {Dispatch, SetStateAction} from 'react'
 import EmojiPicker from 'emoji-picker-react';
 type Props = {
   setMessage: Dispatch<SetStateAction<string>>,
   message: string,
 }
-const PickEmoji = ({message, setMessage}: Props) => {
+const PickEmoji = ({setMessage}: Props) => {
   const handleEmojiAppend = (emoji:any)=>{
     setMessage((prevMessage) => prevMessage + emoji.emoji);
   }

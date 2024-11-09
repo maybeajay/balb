@@ -5,6 +5,7 @@ import { UserRoundPlus, Check } from "lucide-react";
 import { format } from "date-fns";
 import { useParams } from "react-router-dom";
 import { useAppSelector } from "../types.js";
+import Loader from "../shared/Loader.js";
 export default function ProfilePage({}: Props) {
   const [isLoading, setisLoading] = useState<boolean>(true);
   const [userProfile, setuserProfile] = useState<any>([]);
@@ -13,19 +14,19 @@ export default function ProfilePage({}: Props) {
   const {userData}:any = useAppSelector(state=>state.user);
   const params = useParams();
   const {user_name} = params;
-  const subscribeToRealtime = ()=>{
-    const channels = supabase.channel('custom-all-channel')
-    .on(
-      'postgres_changes',
-      { event: '*', schema: 'public', table: 'friends' },
-      (payload:any) => {
-        // setactiveRequests({...activeRequests, ...payload.new})
-        // setuserDetails({...userDetails, ...payload.new})
-      }
-    )
-    .subscribe();
-    return channels;
-  }
+  // const subscribeToRealtime = ()=>{
+  //   const channels = supabase.channel('custom-all-channel')
+  //   .on(
+  //     'postgres_changes',
+  //     { event: '*', schema: 'public', table: 'friends' },
+  //     (payload:any) => {
+  //       setactiveRequests({...activeRequests, ...payload.new})
+  //       setuserDetails({...userDetails, ...payload.new})
+  //     }
+  //   )
+  //   .subscribe();
+  //   return channels;
+  // }
   useEffect(() => {
     (async function getUserProfile() {
       setisLoading(true);
@@ -44,11 +45,11 @@ export default function ProfilePage({}: Props) {
       }
 
       // subscribig to changes
-      const channel = subscribeToRealtime();
+      // const channel = subscribeToRealtime();
 
-      return () => {
-        supabase.removeChannel(channel);
-      };
+      // return () => {
+      //   supabase.removeChannel(channel);
+      // };
     })();
 
     (async function getUserDetails() {
@@ -74,7 +75,7 @@ export default function ProfilePage({}: Props) {
   ) => {
     try {
       setisLoading(true);
-      const { data } = await supabase
+      const {} = await supabase
         .from("friends")
         .insert([{ user_id: userId, friend_id: friendId }]);
 
@@ -92,6 +93,9 @@ export default function ProfilePage({}: Props) {
   };
 
   return (
+    <>
+    {
+      isLoading ? <Loader size={5} color="red"/> : 
     <div className="container mx-auto p-4">
       {/* main profile section */}
       <section className="w-full">
@@ -153,5 +157,7 @@ export default function ProfilePage({}: Props) {
         </div>
       </section>
     </div>
-  );
+    }
+  </>
+  )
 }

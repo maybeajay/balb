@@ -3,7 +3,7 @@ import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
 export interface UserState {
   userData: any[];
   loading: boolean;
-  activeChatID: number | null;
+  activeChatID: string | null;
 }
 
 const initialState: UserState = {
@@ -34,7 +34,7 @@ const userSlice = createSlice({
       state.userData = [];
       state.loading = false;
     },
-    activeChat: (state, action: PayloadAction<number | null>) => {
+    activeChat: (state, action: PayloadAction<string | null>) => {
       state.activeChatID = action.payload;
     },
   },

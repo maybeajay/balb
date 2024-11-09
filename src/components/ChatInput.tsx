@@ -26,7 +26,7 @@ const ChatInput = () => {
     let userDetails = await getSenderDetails();
     try {
       setisLoading(true);
-      const { data, error } = await supabase
+      const {  error } = await supabase
         .from("messages")
         .insert([
           {

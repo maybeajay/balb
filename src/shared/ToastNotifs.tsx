@@ -1,4 +1,3 @@
-import React from 'react'
 import toast from 'react-hot-toast'
 type Props = {
     content: string | null,
@@ -8,7 +7,7 @@ type Props = {
     type: string | null,
 }
 
-export default function ToastNotifs({content, fullName="AJ Style", Time, type}: Props) {
+export default function ToastNotifs({content, Time, type}: Props) {
   console.log("CHECK", type, content, Time)
   return (
     toast.custom((t) => (
