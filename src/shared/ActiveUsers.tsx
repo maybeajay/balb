@@ -4,7 +4,7 @@ import { useAppSelector } from "../types.js";
 import { Dot } from "lucide-react";
 function ActiveUsers() {
   const [activeUsers, setactiveUser] = useState([]);
-  const {userData} = useAppSelector(state=>state.user)
+  const {userData}:any = useAppSelector(state=>state.user)
   useEffect(() => {
     (async function getActiveUsers() {
       let { data: users, error } = await supabase

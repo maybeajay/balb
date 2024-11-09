@@ -4,7 +4,7 @@ import { useAuth } from "../hooks/useAuth.js";
 import FriendsIcon from "./FriendsIcon.js";
 import { useState } from "react";
 const Header = () => {
-  const {userDetails} = useAuth();
+  const {userDetails}:any= useAuth();
   const [isFocused, setisFocused] = useState(false);
   return (
     <div className="header  top-0 bg-white flex items-center justify-between px-8 py-2">

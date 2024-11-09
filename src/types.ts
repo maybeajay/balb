@@ -24,7 +24,7 @@ export type User = {
 };
 
 export type userTypeData = {
-  user: User;
+  userData: User;
 };
 
 export type Message = {

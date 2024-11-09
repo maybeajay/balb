@@ -1,23 +1,23 @@
-import React, { ChangeEvent, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import { LuSendHorizonal } from "react-icons/lu";
 import { FaRegLaugh } from "react-icons/fa";
 import { supabase } from "../../supabase.js";
 import PickEmoji from "../shared/PickEmoji.js";
 import { HiOutlineUpload } from "react-icons/hi";
 import Loader from "../shared/Loader.js";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { catchErrors } from "../slices/errorsSlice.js";
-import { useAppSelector } from "../types.js";
+import { useAppSelector} from "../types.js";
 const ChatInput = () => {
   const [message, setMessage] = useState<string>("");
   const [isLoading, setisLoading] = useState<boolean>(false);
   const [showEmoji, setshowEmoji] = useState<boolean>(false);
-  const { userData } = useAppSelector((state) => state.user);
+  const { userData }:any = useAppSelector((state) => state.user);
   const [imagePreview, setimagePreview] = useState("");
   const [image, setImage] = useState<File | null>(null);
-  const uploadRef = useRef();
+  const uploadRef:any = useRef();
   const dispatch = useDispatch();
-  async function addMessage(imageURl: string) {
+  async function addMessage(imageURl: string | null) {
     let finalURL;
     if (imageURl) {
       finalURL = `${imageURl}-${Date.now() * 1000}`;
@@ -65,7 +65,7 @@ const ChatInput = () => {
     }
   }
 
-  async function uploadImage(file: HTMLInputElement) {
+  async function uploadImage(file: File | null) {
     try {
       setisLoading(true);
       const { data, error } = await supabase.storage
@@ -99,7 +99,7 @@ const ChatInput = () => {
     if (imagePreview != "") {
       uploadImage(image);
     } else {
-      addMessage();
+      addMessage(null);
     }
   };
   const handleChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -113,6 +113,7 @@ const ChatInput = () => {
    ) => {
     try {
       setisLoading(true);
+      if(!e.target.files) return ;
       const file = e?.target?.files && e?.target?.files[0];
       setImage(file);
       const objectUrl = URL.createObjectURL(file);
@@ -156,8 +157,8 @@ const ChatInput = () => {
         <div
           className="flex justify-center items-center w-[40px] h-[40px] mx-3 bg-gray-300 rounded-md hover:cursor-pointer"
           onClick={() => uploadRef?.current?.click()}
-          animate={{ x: 100 }}
-          initial={false}
+          // animate={{ x: 100 }}
+          // initial={false}
         >
           <button className="transition-all rounded-md relative">
             <HiOutlineUpload />

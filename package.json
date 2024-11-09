@@ -13,6 +13,7 @@
     "@lordicon/element": "^1.6.0",
     "@reduxjs/toolkit": "^2.2.5",
     "@supabase/supabase-js": "^2.43.2",
+    "axios": "^1.7.7",
     "date-fns": "^3.6.0",
     "dotenv": "^16.4.5",
     "emoji-picker-react": "^4.9.3",

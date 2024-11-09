@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react';
 import { useAppSelector } from '../types.js';
 import {supabase} from "../../supabase.js"
 function IndividualChat() {
-  const {activeChatID, userData} = useAppSelector(state=>state?.user);
+  const {activeChatID, userData}:any = useAppSelector(state=>state?.user);
   const [isFriendReqVisible, setisFriendReqVisible] = useState<boolean>(false);
 
   // function to update the current active user 
@@ -42,7 +42,7 @@ function IndividualChat() {
           <SideNav />
         </div>
         {
-          isFriendReqVisible && <FriendRequest setVisible={setisFriendReqVisible}/>
+          isFriendReqVisible && <FriendRequest />
         }
   
         {/* Main Content (ChatBox) with 80% width */}

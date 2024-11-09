@@ -45,7 +45,7 @@ function Login() {
   };
   const handleSubmit = async (e:React.SyntheticEvent) => {
     e.preventDefault();
-    let newError = {}
+    let newError:any = {}
     let isValid:Boolean = false
     Object.entries(userData).forEach(([key, value]) => {
       switch(key){

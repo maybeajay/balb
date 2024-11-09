@@ -5,13 +5,12 @@ import { UserRoundPlus, Check } from "lucide-react";
 import { format } from "date-fns";
 import { useParams } from "react-router-dom";
 import { useAppSelector } from "../types.js";
-import { UserProfile } from "../types.js";
 export default function ProfilePage({}: Props) {
   const [isLoading, setisLoading] = useState<boolean>(true);
-  const [userProfile, setuserProfile] = useState([]);
-  const [userDetails, setuserDetails] = useState("");
+  const [userProfile, setuserProfile] = useState<any>([]);
+  const [userDetails, setuserDetails] = useState<any>("");
   const [refresh, setRefresh] = useState(false);
-  const {userData} = useAppSelector(state=>state.user);
+  const {userData}:any = useAppSelector(state=>state.user);
   const params = useParams();
   const {user_name} = params;
   const subscribeToRealtime = ()=>{
@@ -45,7 +44,7 @@ export default function ProfilePage({}: Props) {
       }
 
       // subscribig to changes
-      // const channel = subscribeToRealtime();
+      const channel = subscribeToRealtime();
 
       return () => {
         supabase.removeChannel(channel);
@@ -75,7 +74,7 @@ export default function ProfilePage({}: Props) {
   ) => {
     try {
       setisLoading(true);
-      const { data, error } = await supabase
+      const { data } = await supabase
         .from("friends")
         .insert([{ user_id: userId, friend_id: friendId }]);
 

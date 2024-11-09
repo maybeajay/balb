@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { supabase } from "../supabase.js";
 import { format, parseISO, isBefore, addMinutes } from "date-fns";
 import { FaTrash } from "react-icons/fa";

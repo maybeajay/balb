@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '../../supabase.js';
-import { useSelector } from 'react-redux';
+import { useAppSelector } from '../types.js';
 
 const MyProfile = () => {
-    const [profileData, setProfileData] = useState([]);
-    const {userData} = useSelector(state=>state.user);
+    const [profileData, setProfileData] = useState<any>([]);
+    const {userData}:any = useAppSelector(state=>state.user);
     const [isLoaded, setisLoaded] = useState(false);
     useEffect(() => {
         async function getProfileData() {
