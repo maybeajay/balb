@@ -18,10 +18,10 @@ interface Friend {
   is_pending: boolean;
 }
 function Friends() {
-  const [friendsData, setFriendsData] = useState<Friend[]>([]);
-  const [myFriends, setMyFriends] = useState<User[]>([]);
+  const [friendsData, setFriendsData] = useState<any>([]);
+  const [myFriends, setMyFriends] = useState<any>([]);
   const dispatch = useDispatch();
-  const { userData, activeChatID } = useAppSelector((state) => state.user);
+  const { userData, activeChatID }:any = useAppSelector((state) => state.user);
 
   // Fetch friend details from 'users' table
   const getFriends = async (friendIds: string[]) => {
@@ -81,7 +81,7 @@ function Friends() {
           setFriendsData(friends || []);
         }
       } catch (error) {
-        catchErrors(error?.message);
+        catchErrors((error as Error).message || "An unexpected error occurred");
       }
     };
   
@@ -102,14 +102,14 @@ function Friends() {
   }, [friendsData]);
   // for selecting a friend and highlighting the user
   const handleFriendSelect = (selectedFriend: User) => {
-    dispatch(activeChat(selectedFriend?.id));
+    dispatch(activeChat(+selectedFriend?.id));
   };
   return (
     <div>
       <h2 className="text-sm font-semibold text-gray-600 mb-2">All Chats</h2>
       <ul>
         {myFriends.length >= 1 &&
-          myFriends.map((friend: User, index: number) => (
+          myFriends.map((friend: any, index: number) => (
             <li
               key={index}
               className={`flex items-center p-4 rounded-md cursor-pointer ${

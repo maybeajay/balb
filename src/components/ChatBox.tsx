@@ -4,13 +4,13 @@ import { format } from "date-fns";
 import EmptyMessage from "./EmptyMessage.js";
 import { useAppSelector } from "../types.js";
 import { CheckCheck, Loader } from "lucide-react";
-import { userTypeData, Message } from "../types.ts";
+import {Message } from "../types.ts";
 
 function ChatBox({ selectedId }: { selectedId: string | null }) {
   const [messages, setMessage] = useState<Message[]>([]);
   const [isLoading, setisLoading] = useState(false);
   const [newMsg, setnewMsg] = useState<string>("");
-  const { userData } = useAppSelector(state=>state.user);
+  const { userData}:any = useAppSelector(state=>state.user);
   // for realtime messages and updates
   const subscribeToRealtime = async () => {
     let channels;
@@ -22,7 +22,6 @@ function ChatBox({ selectedId }: { selectedId: string | null }) {
           "postgres_changes",
           { event: "*", schema: "public", table: "individual_chats" },
           (payload) => {
-            console.log("payloadd", payload)
             setMessage((prevMessages: Message[]) => {
               let index = prevMessages.findIndex(
                 (message) =>

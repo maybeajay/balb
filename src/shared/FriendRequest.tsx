@@ -3,7 +3,7 @@ import { supabase } from "../../supabase.js";
 import { useSelector } from "react-redux";
 
 export default function FriendRequest() {
-  const [activeRequests, setActiveRequests] = useState([]);
+  const [activeRequests, setActiveRequests]:any = useState([]);
   const { userData } = useSelector((state: any) => state.user);
 
   const subscribeToRealtime = () => {
@@ -48,7 +48,7 @@ export default function FriendRequest() {
 
   
 
-  const acceptRequest = async (friendId: string, userId: string) => {
+  const acceptRequest = async (friendId: string) => {
     try {
       const { data, error } = await supabase
         .from('friends')
@@ -102,7 +102,7 @@ export default function FriendRequest() {
                 <div className="flex space-x-2">
                   <button
                     className="bg-green-500 text-white px-2 py-1 rounded-full hover:bg-green-600"
-                    onClick={() => acceptRequest(item?.users?.id, userData?.user?.id)}
+                    onClick={() => acceptRequest(item?.users?.id)}
                   >
                     Accept
                   </button>

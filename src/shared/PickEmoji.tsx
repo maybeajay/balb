@@ -10,7 +10,7 @@ const PickEmoji = ({message, setMessage}: Props) => {
   }
   return (
     <div className='transition-all ease-in-out duration-200'>
-      <EmojiPicker  setMessage={setMessage}  message={message} emojiStyle={"apple"} onEmojiClick={(emoji)=>handleEmojiAppend(emoji)} lazyLoadEmojis={false}/>
+      <EmojiPicker   onEmojiClick={(emoji)=>handleEmojiAppend(emoji)} lazyLoadEmojis={false}/>
     </div>
   )
 }

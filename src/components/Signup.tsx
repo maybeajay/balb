@@ -8,7 +8,7 @@ import { RiLockPasswordLine } from "react-icons/ri";
 import { FaRegUser } from "react-icons/fa";
 import { motion } from "framer-motion";
 type credsType = {
-  email: string | null;
+  email: string;
   password: string | undefined;
   confirmPassword: string | undefined;
   userName: string | null;
@@ -44,7 +44,7 @@ function Signup() {
   const [preview, setPreview] = useState<string | null>(null);
   const [canSendReq, setcanSendReq] = useState<boolean>(false);
   const [publicUrl, setpublicUrl] = useState<string>("");
-  const ref = useRef();
+  const ref:any = useRef();
   const [errors, setErrors] = useState<Errors>({
     emailErr: null,
     passErr: null,
@@ -290,8 +290,9 @@ function Signup() {
     }
   };
 
-  const handleImage = (e: React.SyntheticEvent) => {
-    const file = e.target.files[0];
+  const handleImage = (e?: HTMLInputEvent) => {
+    if(!e?.target.files) return ;
+    const file:any = e?.target?.files[0];
     setFile(file);
     const objectUrl = URL.createObjectURL(file);
     setPreview(objectUrl);
@@ -640,7 +641,7 @@ function Signup() {
                   drag="x"
                   dragConstraints={{ left: -100, right: 100 }}
                   className="bg-gray-300 w-[120px] h-[120px] rounded-[60px] items-center flex justify-center profile_box_Shadow"
-                  onClick={() => ref?.current.click()}
+                  onClick={() => ref ?? ref?.current.click()}
                 >
                   {preview ? (
                     <img
@@ -653,7 +654,7 @@ function Signup() {
                   <input
                     type="file"
                     accept="image/*"
-                    onChange={handleImage}
+                    onChange={()=>handleImage()}
                     style={{ display: "none" }}
                     ref={ref}
                   />
