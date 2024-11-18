@@ -22,6 +22,33 @@ function ChatBox({ selectedId }: { selectedId: string | null }) {
           "postgres_changes",
           { event: "*", schema: "public", table: "individual_chats" },
           (payload) => {
+            // setMessage((prevMessages: Message[]) => {
+            //   let index = prevMessages.findIndex(
+            //     (message) =>
+            //       message.id === payload.old?.id || message.id === payload.new.id
+            //   );
+            //   if (payload.new.is_deleted) {
+            //     if (index !== -1) {
+            //       const updatedMessages = [...prevMessages];
+            //       updatedMessages[index] = {
+            //         ...payload.new,
+            //         content: "This message is deleted",
+            //       };
+            //       return updatedMessages;
+            //     }
+            //   } else {
+            //     if (payload.old?.id) {
+            //       if (index !== -1) {
+            //         const updatedMessages = [...prevMessages];
+            //         updatedMessages[index] = payload.new;
+            //         return updatedMessages;
+            //       }
+            //     } else {
+            //       return [...prevMessages, payload.new];
+            //     }
+            //   }
+            //   return prevMessages;
+            // });
             setMessage((prevMessages: Message[]) => {
               let index = prevMessages.findIndex(
                 (message) =>
@@ -49,6 +76,7 @@ function ChatBox({ selectedId }: { selectedId: string | null }) {
               }
               return prevMessages;
             });
+            
           }
         )
         .subscribe();
@@ -89,37 +117,10 @@ function ChatBox({ selectedId }: { selectedId: string | null }) {
 
     return ()=>supabase.removeChannel(channel);
   }, [selectedId, userData?.user?.id]);
-  const updateMessageSeenStatus = async (messageId: string) => {
-    const { error } = await supabase
-      .from("individual_chats")
-      .update({ is_seen: true })
-      .eq("id", messageId);
-
-    if (error) {
-      console.error("Error updating message seen status:", error);
-    }
-  };
-
-  useEffect(() => {
-    const markMessagesAsSeen = async () => {
-      const unseenMessages = messages.filter(
-        (msg: Message) =>
-          msg.receiver_id === userData?.user?.id && !msg.is_seen
-      );
-
-      for (const message of unseenMessages) {
-        await updateMessageSeenStatus(message?.id);
-      }
-    };
-
-    if (messages.length > 0) {
-      markMessagesAsSeen();
-    }
-  }, [messages, userData?.user?.id]);
 
   const sendMessage = async () => {
     try {
-      setisLoading(true);
+      // setisLoading(true);
       const { error } = await supabase
         .from("individual_chats")
         .insert([
@@ -142,7 +143,7 @@ function ChatBox({ selectedId }: { selectedId: string | null }) {
       setisLoading(false);
       console.log("Error occurred", error);
     } finally {
-      setisLoading(false);
+      // setisLoading(false);
     }
   };
 
