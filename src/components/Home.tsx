@@ -8,6 +8,7 @@ function Home({}: Props) {
   const [currentPage, setCurrentPage] = useState("Individual");
   return (
     <div className='container'>
+                <p className="text-red-400 text-center text-xl">The web app is still in production and i am still fixing those error whenever i got time</p>
       <section className='flex justify-around mt-10 ease-in-out'>
         <div   className={`${currentPage === "Global" ? 'bg-violet-500' : 'bg-gray-400'} border-white rounded-lg w-[15%] h-[50px] text-center text-white cursor-pointer flex items-center justify-center gap-3 transition-all ease-in-out`}
           onClick={() => setCurrentPage("Global")}>
