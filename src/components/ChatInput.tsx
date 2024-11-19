@@ -24,6 +24,8 @@ const ChatInput = () => {
     } 
 
     let userDetails = await getSenderDetails();
+    console.log("final url", finalURL);
+    return;
     try {
       setisLoading(true);
       const {  error } = await supabase

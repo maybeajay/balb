@@ -1,16 +1,18 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { supabase } from "../../supabase.js";
 import { format } from "date-fns";
 import EmptyMessage from "./EmptyMessage.js";
 import { useAppSelector } from "../types.js";
 import { CheckCheck, Loader } from "lucide-react";
 import {Message } from "../types.ts";
+import useChatScroll from "../hooks/useScrollRef.tsx";
 
 function ChatBox({ selectedId }: { selectedId: string | null }) {
   const [messages, setMessage] = useState<Message[]>([]);
   const [isLoading, setisLoading] = useState(false);
   const [newMsg, setnewMsg] = useState<string>("");
   const { userData}:any = useAppSelector(state=>state.user);
+  const chatScrollRef = useChatScroll(messages)
   // for realtime messages and updates
   const subscribeToRealtime = async () => {
     let channels;
@@ -135,6 +137,7 @@ function ChatBox({ selectedId }: { selectedId: string | null }) {
         ])
         .select();
       setnewMsg("");
+      // chatScrollRef.current.scroll()
 
       if (error) {
         console.error("Error inserting data:", error);
@@ -152,7 +155,7 @@ function ChatBox({ selectedId }: { selectedId: string | null }) {
       <div className="w-full flex flex-row">
         <div className="w-full flex flex-col h-[50vh] mt-10 border-gray-50">
           {/* Chat Messages */}
-          <div className="flex-1 p-4 overflow-y-auto">
+          <div className="flex-1 p-4 overflow-y-auto" ref={chatScrollRef}>
             <div className="flex flex-col space-y-4">
               {messages.length >= 1 && !isLoading ? (
                 messages.map((msg: Message, id) => (

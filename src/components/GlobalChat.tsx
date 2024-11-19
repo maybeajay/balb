@@ -8,6 +8,7 @@ import { useSelector } from "react-redux";
 import ViewImage from "../Modals/ViewImage.js";
 import { AnimatePresence, motion } from "framer-motion";
 import ContentLoader from "react-content-loader";
+import useChatScroll from "../hooks/useScrollRef.js";
 type Data = {
   map: any;
   id: number;
@@ -51,14 +52,6 @@ function GlobalChat() {
     } catch (error) {
     }
   };
-  // const getCurrentUser = async () => {
-  //   let { data: users, erorr } = await supabase
-  //     .from("users")
-  //     .select("*")
-  //     .eq("id", userData?.id);
-  //     if(erorr) return ; 
-  //   setcurrUser(users);
-  // };
   const subscribeToRealtime = async () => {
     let channels;
     try {
@@ -162,6 +155,9 @@ function GlobalChat() {
     setimageUrl(url);
     setisActive(true);
   };
+
+  // ref of message 
+  const chatScrollRef = useChatScroll(messages)
   return (
     <>
       {isLoading ? (
@@ -170,11 +166,11 @@ function GlobalChat() {
         <div className="container mx-auto mt-3 flex items-center p-10">
           <div className="w-full mx-auto bg-white rounded-lg shadow-lg overflow-hidden">
             {/* Messages */}
-            <div className="p-6 h-96 overflow-y-scroll">
+            <div className="p-6 h-96 overflow-y-scroll" ref={chatScrollRef}>
               <div className="space-y-4">
                 {/* Message from others */}
                 {/* Message from user */}
-                <div>
+                <div >
                   <div className="text-white p-3 rounded-lg">
                     <div className="flex flex-col gap-2">
                       {messages.length > 0 &&
